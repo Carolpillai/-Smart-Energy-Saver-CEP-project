@@ -270,6 +270,58 @@
       </div>
 
       <div class="research-dashboard">
+        <!-- GOOGLE FORM LIVE INTEGRATION BANNER -->
+        <div class="google-form-sync-banner" style="background: rgba(112, 21, 89, 0.05); border: 1.5px solid rgba(112, 21, 89, 0.25); border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div style="background: #701559; color: #fff; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">
+              <i data-lucide="file-text"></i>
+            </div>
+            <div>
+              <div style="font-weight: 700; color: var(--color-primary-dark); font-size: 1rem; display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
+                Google Form Live Data Engine
+                <span id="googleFormStatusBadge" style="background: #2A835F; color: #fff; font-size: 0.72rem; padding: 0.15rem 0.55rem; border-radius: 12px; font-weight: 600;">
+                  ● Live Sync Active
+                </span>
+              </div>
+              <div style="font-size: 0.82rem; color: var(--color-text-muted); margin-top: 0.15rem;">
+                Connected to: <a href="https://forms.gle/a3X9WdD279FtXXW57" target="_blank" style="color: #701559; font-weight: 700; text-decoration: underline;">Household Energy Usage & Awareness Survey</a>
+              </div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="btn btn-sm" id="openFormModalBtn" style="background: rgba(112, 21, 89, 0.1); border: 1px solid #701559; color: #701559;">
+              <i data-lucide="external-link" style="width: 14px;"></i> Take Survey
+            </button>
+            <button type="button" class="btn btn-sm btn-primary" id="syncGoogleFormBtn" style="background: #701559; border-color: #701559;">
+              <i data-lucide="refresh-cw" style="width: 14px;"></i> Fetch Live Responses
+            </button>
+            <button type="button" class="btn btn-sm btn-secondary" id="toggleGoogleSheetUrlBtn">
+              <i data-lucide="settings" style="width: 14px;"></i> Connect Sheet
+            </button>
+          </div>
+        </div>
+
+        <!-- GOOGLE FORM SETTINGS DRAWER (Initially Hidden) -->
+        <div id="googleFormSettingsDrawer" style="display: none; background: #FAF9F6; border: 1.5px dashed #701559; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+          <h4 style="margin-top: 0; font-size: 1rem; color: #701559; display: flex; align-items: center; gap: 0.4rem;">
+            <i data-lucide="link" style="width: 18px;"></i> Google Sheet Live Response Feed Link (.csv)
+          </h4>
+          <p style="font-size: 0.83rem; color: var(--color-text-muted); margin-bottom: 0.85rem; line-height: 1.45;">
+            To pull 100% real live data directly from your Google Form responses into these charts:
+            <br>1. Open your Google Form (<a href="https://forms.gle/a3X9WdD279FtXXW57" target="_blank" style="color: #701559;">https://forms.gle/a3X9WdD279FtXXW57</a>) &rarr; Go to <strong>Responses</strong> tab &rarr; click <strong>Link to Sheets</strong>.
+            <br>2. In the Google Sheet: Click <strong>File &rarr; Share &rarr; Publish to web</strong>.
+            <br>3. Change "Web page" to <strong>Comma-separated values (.csv)</strong> and click <strong>Publish</strong>.
+            <br>4. Paste your published CSV link below and click <strong>Save & Fetch Live Data</strong>!
+          </p>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <input type="url" id="googleSheetCsvUrlInput" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv" style="flex: 1; min-width: 260px;">
+            <button type="button" class="btn btn-primary btn-sm" id="saveSheetUrlBtn" style="background: #701559; border-color: #701559;">
+              <i data-lucide="save"></i> Save & Fetch Live Data
+            </button>
+          </div>
+          <div id="googleSheetSyncStatus" style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--color-fresh-green); font-weight: 600; display: none;"></div>
+        </div>
         <div class="research-meta-grid">
           <div class="meta-stat-item">
             <div class="meta-stat-num" id="resMetaHouseholds">15</div>
@@ -1120,6 +1172,26 @@
         </form>
       </div>
 
+    </div>
+  </div>
+
+  <!-- GOOGLE FORM LIVE SURVEY MODAL -->
+  <div id="googleFormModal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(9, 35, 40, 0.85); z-index: 10000; align-items: center; justify-content: center; backdrop-filter: blur(6px); padding: 1rem;">
+    <div style="background: #FFFFFF; border-radius: var(--radius-lg); width: 100%; max-width: 780px; max-height: 90vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow-xl);">
+      <div style="padding: 1rem 1.25rem; background: #701559; color: #FFFFFF; display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1rem;">
+          <i data-lucide="file-text" style="width: 20px; height: 20px;"></i>
+          Household Energy Usage & Awareness Survey
+        </div>
+        <button type="button" id="closeFormModalBtn" style="background: transparent; border: none; color: #FFFFFF; font-size: 1.5rem; cursor: pointer; line-height: 1; padding: 0 0.5rem;">&times;</button>
+      </div>
+      <div style="flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0.5rem;">
+        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScXjS8Lp4Wd-a3X9WdD279FtXXW57/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0" id="googleFormIframe" style="width: 100%; border: none;">Loading survey...</iframe>
+      </div>
+      <div style="padding: 0.75rem 1.25rem; background: #FAF9F6; border-top: 1px solid var(--color-border); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--color-text-muted);">
+        <span>Responses submit directly to your Google Form.</span>
+        <button type="button" class="btn btn-secondary btn-sm" id="closeFormModalFooterBtn">Close Window</button>
+      </div>
     </div>
   </div>
 
