@@ -1429,7 +1429,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const challengeProgressText = document.getElementById('challengeProgressText');
   const challengeStatusMsg = document.getElementById('challengeStatusMsg');
   const resetChallengeBtn = document.getElementById('resetChallengeBtn');
-  const simulateNextDayBtn = document.getElementById('simulateNextDayBtn');
 
   function updateChallengeUI(customMessage = null) {
     if (!daysTracker) return;
@@ -1546,25 +1545,6 @@ document.addEventListener('DOMContentLoaded', () => {
       };
       saveChallengeState([], null);
       updateChallengeUI('🔄 <strong>Tracker Reset:</strong> Day 1 is now ready to log today!');
-    });
-  }
-
-  if (simulateNextDayBtn) {
-    simulateNextDayBtn.addEventListener('click', () => {
-      // Simulate that the last check-in occurred yesterday so today's click is unlocked
-      const yesterday = new Date();
-      yesterday.setDate(yesterday.getDate() - 1);
-      const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
-      
-      state.challengeData.lastCheckInDate = yesterdayStr;
-      saveChallengeState(state.challengeData.completedDays, yesterdayStr);
-
-      const nextDay = state.challengeData.completedDays.length < 7 ? state.challengeData.completedDays.length + 1 : null;
-      if (nextDay) {
-        updateChallengeUI(`⏩ <strong>Demo Simulated:</strong> Day ${nextDay} is now unlocked and ready to click!`);
-      } else {
-        updateChallengeUI(`🏆 All 7 days are already completed!`);
-      }
     });
   }
 
