@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
   
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Font Awesome 6 / React Icons Set -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -33,7 +33,7 @@
     <div class="container nav-container">
       <a href="#hero" class="nav-logo">
         <div class="nav-logo-icon">
-          <i data-lucide="zap"></i>
+          <i class="fa-solid fa-bolt-lightning"></i>
         </div>
         <span>Smart Energy Saver</span>
       </a>
@@ -50,10 +50,10 @@
 
       <div class="nav-actions">
         <a href="#calculator" class="btn btn-primary btn-sm">
-          <i data-lucide="scan-line"></i> Scan Light Bill
+          <i class="fa-solid fa-qrcode"></i> Scan Light Bill
         </a>
         <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle Navigation">
-          <i data-lucide="menu"></i>
+          <i class="fa-solid fa-bars"></i>
         </button>
       </div>
     </div>
@@ -72,15 +72,15 @@
         
         <div class="hero-ctas">
           <a href="#calculator" class="btn btn-primary">
-            <i data-lucide="scan-line"></i>
+            <i class="fa-solid fa-qrcode"></i>
             Upload Light Bill (OCR)
           </a>
           <a href="#calculator" class="btn btn-secondary">
-            <i data-lucide="calculator"></i>
+            <i class="fa-solid fa-calculator"></i>
             Energy Calculator
           </a>
           <button type="button" class="btn btn-secondary" id="loadDemoDataBtn">
-            <i data-lucide="play-circle"></i>
+            <i class="fa-solid fa-circle-play"></i>
             Load Sample Household
           </button>
         </div>
@@ -92,7 +92,7 @@
           
           <div class="hero-card-overlay">
             <div class="hero-meter-icon">
-              <i data-lucide="activity"></i>
+              <i class="fa-solid fa-chart-line"></i>
             </div>
             <div class="hero-meter-value" id="heroLivePower">1,240 W</div>
             <div class="hero-meter-label">Live Household Demand</div>
@@ -100,7 +100,7 @@
 
           <!-- Floating Stat Bubbles -->
           <div class="hero-floating-stat stat-1">
-            <i data-lucide="trending-down" style="color: var(--color-soft-sage);"></i>
+            <i class="fa-solid fa-arrow-trend-down" style="color: var(--color-soft-sage);"></i>
             <div>
               <div class="stat-num" id="heroFloatingStat1">15%</div>
               <div style="font-size: 0.75rem; color: var(--color-text-light);">Avoidable Monthly Waste</div>
@@ -108,7 +108,7 @@
           </div>
 
           <div class="hero-floating-stat stat-2">
-            <i data-lucide="shield-check" style="color: var(--color-soft-sage);"></i>
+            <i class="fa-solid fa-shield-halved" style="color: var(--color-soft-sage);"></i>
             <div>
               <div class="stat-num" id="heroFloatingStat2">3.2 kWh</div>
               <div style="font-size: 0.75rem; color: var(--color-text-light);">Daily Conservation Target</div>
@@ -157,7 +157,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="wind"></i>
+              <i class="fa-solid fa-snowflake"></i>
             </div>
             <span class="impact-badge impact-high">High Impact</span>
           </div>
@@ -170,7 +170,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="box"></i>
+              <i class="fa-solid fa-box"></i>
             </div>
             <span class="impact-badge impact-medium">Medium Impact</span>
           </div>
@@ -183,7 +183,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="flame"></i>
+              <i class="fa-solid fa-fire-burner"></i>
             </div>
             <span class="impact-badge impact-high">High Impact</span>
           </div>
@@ -196,7 +196,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="fan"></i>
+              <i class="fa-solid fa-fan"></i>
             </div>
             <span class="impact-badge impact-low">Low-Med Impact</span>
           </div>
@@ -209,7 +209,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="refresh-cw"></i>
+              <i class="fa-solid fa-rotate"></i>
             </div>
             <span class="impact-badge impact-medium">Medium Impact</span>
           </div>
@@ -222,7 +222,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="tv"></i>
+              <i class="fa-solid fa-tv"></i>
             </div>
             <span class="impact-badge impact-low">Low Impact</span>
           </div>
@@ -235,7 +235,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="lightbulb"></i>
+              <i class="fa-solid fa-lightbulb"></i>
             </div>
             <span class="impact-badge impact-low">Low Impact</span>
           </div>
@@ -248,7 +248,7 @@
         <div class="appliance-card">
           <div class="appliance-card-top">
             <div class="appliance-icon">
-              <i data-lucide="laptop"></i>
+              <i class="fa-solid fa-laptop"></i>
             </div>
             <span class="impact-badge impact-low">Low Impact</span>
           </div>
@@ -274,7 +274,7 @@
         <div class="google-form-sync-banner" style="background: rgba(112, 21, 89, 0.05); border: 1.5px solid rgba(112, 21, 89, 0.25); border-radius: var(--radius-md); padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
           <div style="display: flex; align-items: center; gap: 0.85rem;">
             <div style="background: #701559; color: #fff; width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem; flex-shrink: 0;">
-              <i data-lucide="file-text"></i>
+              <i class="fa-solid fa-file-lines"></i>
             </div>
             <div>
               <div style="font-weight: 700; color: var(--color-primary-dark); font-size: 1rem; display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap;">
@@ -291,13 +291,13 @@
 
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <button type="button" class="btn btn-sm" id="openFormModalBtn" style="background: rgba(112, 21, 89, 0.1); border: 1px solid #701559; color: #701559;">
-              <i data-lucide="external-link" style="width: 14px;"></i> Take Survey
+              <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 12px;"></i> Take Survey
             </button>
             <button type="button" class="btn btn-sm btn-primary" id="syncGoogleFormBtn" style="background: #701559; border-color: #701559;">
-              <i data-lucide="refresh-cw" style="width: 14px;"></i> Fetch Live Responses
+              <i class="fa-solid fa-rotate" style="font-size: 12px;"></i> Fetch Live Responses
             </button>
             <button type="button" class="btn btn-sm btn-secondary" id="toggleGoogleSheetUrlBtn">
-              <i data-lucide="settings" style="width: 14px;"></i> Connect Sheet
+              <i class="fa-solid fa-gear" style="font-size: 12px;"></i> Connect Sheet
             </button>
           </div>
         </div>
@@ -305,7 +305,7 @@
         <!-- GOOGLE FORM SETTINGS DRAWER (Initially Hidden) -->
         <div id="googleFormSettingsDrawer" style="display: none; background: #FAF9F6; border: 1.5px dashed #701559; border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
           <h4 style="margin-top: 0; font-size: 1rem; color: #701559; display: flex; align-items: center; gap: 0.4rem;">
-            <i data-lucide="link" style="width: 18px;"></i> Google Sheet Live Response Feed Link (.csv)
+            <i class="fa-solid fa-link" style="font-size: 16px;"></i> Google Sheet Live Response Feed Link (.csv)
           </h4>
           <p style="font-size: 0.83rem; color: var(--color-text-muted); margin-bottom: 0.85rem; line-height: 1.45;">
             To pull 100% real live data directly from your Google Form responses into these charts:
@@ -317,7 +317,7 @@
           <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
             <input type="url" id="googleSheetCsvUrlInput" class="form-control" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?output=csv" style="flex: 1; min-width: 260px;">
             <button type="button" class="btn btn-primary btn-sm" id="saveSheetUrlBtn" style="background: #701559; border-color: #701559;">
-              <i data-lucide="save"></i> Save & Fetch Live Data
+              <i class="fa-solid fa-floppy-disk"></i> Save & Fetch Live Data
             </button>
           </div>
           <div id="googleSheetSyncStatus" style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--color-fresh-green); font-weight: 600; display: none;"></div>
@@ -399,7 +399,7 @@
     <div class="container">
       <div class="section-header" style="color: #FFFFFF;">
         <span class="tagline" style="background: rgba(255,255,255,0.15); color: #FFFFFF; border-color: rgba(255,255,255,0.3);">
-          <i data-lucide="zap" style="width: 14px;"></i> 03 / Interactive Energy Intelligence
+          <i class="fa-solid fa-bolt-lightning" style="font-size: 14px;"></i> 03 / Interactive Energy Intelligence
         </span>
         <h2 style="color: #FFFFFF;">Calculate & Diagnose Household Energy</h2>
         <p style="color: rgba(224, 235, 240, 0.9);">Upload your light bill photo to auto-extract units and tariff slab rates, or search appliance models to calculate your footprint interactively.</p>
@@ -413,11 +413,11 @@
           <div style="background: rgba(42, 131, 95, 0.06); border: 1.5px dashed var(--color-fresh-green); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
               <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-deep-teal); margin: 0; display: flex; align-items: center; gap: 0.45rem;">
-                <i data-lucide="camera" style="width: 18px; color: var(--color-fresh-green);"></i>
+                <i class="fa-solid fa-camera" style="font-size: 18px; color: var(--color-fresh-green);"></i>
                 Upload or Snap Light Bill Photo
               </h4>
               <span class="ocr-badge" style="background: var(--color-deep-teal); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
-                <i data-lucide="cpu" style="width: 12px; margin-right: 3px;"></i> OCR Engine
+                <i class="fa-solid fa-microchip" style="font-size: 12px; margin-right: 3px;"></i> OCR Engine
               </span>
             </div>
 
@@ -428,17 +428,17 @@
               
               <div class="ocr-dropzone-content" id="ocrDropzoneContent">
                 <div class="ocr-icon-circle" style="width: 44px; height: 44px; margin: 0 auto 0.5rem auto; background: rgba(42, 131, 95, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                  <i data-lucide="file-text" style="width: 24px; height: 24px; color: var(--color-fresh-green);"></i>
+                  <i class="fa-solid fa-file-invoice" style="font-size: 22px; color: var(--color-fresh-green);"></i>
                 </div>
                 <h5 style="font-size: 0.95rem; margin-bottom: 0.2rem; color: var(--color-primary-dark);">Drag & Drop Light Bill, or Take Photo</h5>
                 <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 0.85rem;">Browse file from gallery or snap live camera photo</p>
                 
                 <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
                   <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('billFileInput').click()" style="padding: 0.45rem 0.85rem;">
-                    <i data-lucide="folder-open" style="width: 14px;"></i> Browse File
+                    <i class="fa-solid fa-folder-open" style="font-size: 14px;"></i> Browse File
                   </button>
                   <button type="button" class="btn btn-secondary btn-sm" id="openCameraBtn" style="padding: 0.45rem 0.85rem; background: rgba(42, 131, 95, 0.15); color: var(--color-deep-teal); border-color: var(--color-fresh-green);">
-                    <i data-lucide="camera" style="width: 14px;"></i> Take Photo With Camera
+                    <i class="fa-solid fa-camera" style="font-size: 14px;"></i> Take Photo With Camera
                   </button>
                 </div>
               </div>
@@ -458,7 +458,7 @@
               <!-- Scan Completed & Verified Screen (Initially Hidden) -->
               <div class="ocr-success-screen" id="ocrSuccessScreen" style="display: none;">
                 <div class="ocr-success-badge" style="background: rgba(42, 131, 95, 0.15); color: var(--color-deep-teal); padding: 0.35rem 0.75rem; border-radius: 4px; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.75rem;">
-                  <i data-lucide="check-circle" style="width: 16px; height: 16px; color: var(--color-fresh-green);"></i>
+                  <i class="fa-solid fa-circle-check" style="font-size: 16px; color: var(--color-fresh-green);"></i>
                   <span>OCR Scan Completed & Verified</span>
                 </div>
 
@@ -480,7 +480,7 @@
 
                 <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
                   <button type="button" class="btn btn-outline btn-sm" id="uploadAnotherBillBtn" style="color: var(--color-deep-teal); border-color: var(--color-border); flex: 1; padding: 0.4rem 0.6rem; font-size: 0.75rem;">
-                    <i data-lucide="upload" style="width: 13px;"></i> Upload Another Photo
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 13px;"></i> Upload Another Photo
                   </button>
                 </div>
               </div>
@@ -521,7 +521,7 @@
           <div style="background: rgba(42, 131, 95, 0.06); border: 1px solid var(--color-border); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
               <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-deep-teal); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem;">
-                <i data-lucide="database" style="width: 15px; color: var(--color-fresh-green);"></i>
+                <i class="fa-solid fa-database" style="font-size: 15px; color: var(--color-fresh-green);"></i>
                 Appliance Model & Power Directory
               </span>
               <span style="font-size: 0.75rem; background: var(--color-deep-teal); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">Model Database</span>
@@ -533,7 +533,7 @@
             <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
               <input type="text" class="form-control" id="aiBrandQuery" placeholder="Search model e.g. Daikin 1.5T AC, Samsung 253L Fridge, Havells BLDC Fan" style="font-size: 0.875rem; background: #fff;">
               <button type="button" class="btn btn-primary btn-sm" id="aiSearchBtn" style="white-space: nowrap; padding: 0.6rem 1rem;">
-                <i data-lucide="search" style="width: 14px;"></i>
+                <i class="fa-solid fa-magnifying-glass" style="font-size: 14px;"></i>
                 Search Model
               </button>
             </div>
@@ -556,7 +556,7 @@
                   <div style="font-size: 0.8rem; color: var(--color-text-muted);" id="aiResultDetail">Power Spec: <strong style="color: var(--color-fresh-green); font-size: 0.95rem;" id="aiResultWattVal">1,450 Watts</strong> <span style="color: var(--color-deep-teal); font-weight: 600;" id="aiConfidenceBadge">(High Confidence)</span></div>
                 </div>
                 <button type="button" class="btn btn-primary btn-sm" id="aiApplyWattBtn" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">
-                  <i data-lucide="check" style="width: 14px;"></i> Apply Wattage Spec
+                  <i class="fa-solid fa-check" style="font-size: 14px;"></i> Apply Wattage Spec
                 </button>
               </div>
             </div>
@@ -566,7 +566,7 @@
             <div class="form-group">
               <label class="form-label" for="calcAppliance">
                 Select Appliance Category
-                <i data-lucide="cpu" style="width: 16px; color: var(--color-fresh-green);"></i>
+                <i class="fa-solid fa-microchip" style="font-size: 16px; color: var(--color-fresh-green);"></i>
               </label>
               <select class="form-select" id="calcAppliance">
                 <option value="1500|Air Conditioner">Air Conditioner (1,500 W)</option>
@@ -596,7 +596,7 @@
             <div id="brandCompBanner" style="display: none; background: rgba(18, 84, 79, 0.06); border: 1px solid var(--color-border); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem; font-size: 0.825rem;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
                 <span style="font-weight: 700; color: var(--color-deep-teal); display: flex; align-items: center; gap: 0.35rem;" id="brandCompTitle">
-                  <i data-lucide="layers" style="width: 14px;"></i> Brand Model Efficiency
+                  <i class="fa-solid fa-layer-group" style="font-size: 14px;"></i> Brand Model Efficiency
                 </span>
                 <span style="font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;" id="brandEfficiencyBadge">Most Efficient</span>
               </div>
@@ -661,11 +661,11 @@
 
             <div style="display: flex; gap: 1rem;">
               <button type="submit" class="btn btn-primary" style="flex: 1;">
-                <i data-lucide="calculator" style="width: 16px;"></i>
+                <i class="fa-solid fa-calculator" style="font-size: 16px;"></i>
                 Compute Footprint
               </button>
               <button type="button" class="btn btn-outline" id="addToSnapshotBtn">
-                <i data-lucide="plus" style="width: 16px;"></i>
+                <i class="fa-solid fa-plus" style="font-size: 16px;"></i>
                 Add to Home List
               </button>
             </div>
@@ -694,7 +694,7 @@
           <!-- Savings Comparison Visual -->
           <div class="comparison-box">
             <h5>
-              <i data-lucide="zap-off" style="width: 16px; color: var(--color-soft-sage);"></i>
+              <i class="fa-solid fa-plug-circle-xmark" style="font-size: 16px; color: var(--color-soft-sage);"></i>
               What if you used it 1 hour less each day?
             </h5>
 
@@ -740,10 +740,10 @@
           </div>
           <div style="display: flex; gap: 0.75rem;">
             <button class="btn btn-primary btn-sm" id="downloadAuditReportBtn">
-              <i data-lucide="file-text"></i> Download Energy Audit Report (PDF)
+              <i class="fa-solid fa-file-pdf"></i> Download Energy Audit Report (PDF)
             </button>
             <button class="btn btn-outline btn-sm" id="clearSnapshotBtn">
-              <i data-lucide="trash-2"></i> Clear All
+              <i class="fa-solid fa-trash-can"></i> Clear All
             </button>
           </div>
         </div>
