@@ -805,17 +805,17 @@
             <svg class="gauge-circle" width="220" height="220" viewBox="0 0 220 220">
               <circle class="gauge-background" cx="110" cy="110" r="90" fill="none" />
               <circle class="gauge-progress" id="scoreGaugeProgress" cx="110" cy="110" r="90" fill="none" 
-                      stroke-dasharray="565.48" stroke-dashoffset="158.33" />
+                      stroke-dasharray="565.48" stroke-dashoffset="565.48" />
             </svg>
             <div class="score-center-text">
-              <div class="score-number" id="scoreDisplayNum">72</div>
+              <div class="score-number" id="scoreDisplayNum">0</div>
               <div class="score-max">/ 100</div>
             </div>
           </div>
 
-          <div class="score-feedback" id="scoreFeedbackTitle">Good Conservation Habits</div>
+          <div class="score-feedback" id="scoreFeedbackTitle">Habit Diagnostic</div>
           <p style="font-size: 0.95rem; color: var(--color-text-muted); max-width: 320px; margin: 0 auto;" id="scoreFeedbackDesc">
-            You're doing well — a few small habit tweaks could take your energy savings further.
+            Answer the habit questions on the right to calculate your household conservation score.
           </p>
         </div>
 
@@ -912,6 +912,15 @@
         </div>
 
         <div style="font-size: 1.1rem; font-weight: 600; color: var(--color-soft-sage);" id="challengeProgressText">0 of 7 Days Completed</div>
+        <div class="challenge-status-msg" id="challengeStatusMsg"></div>
+        <div class="challenge-action-row">
+          <button type="button" class="challenge-action-btn" id="resetChallengeBtn" title="Reset your 7-day challenge progress">
+            <i data-lucide="rotate-ccw"></i> Reset
+          </button>
+          <button type="button" class="challenge-action-btn" id="simulateNextDayBtn" title="Simulate passing 1 day for grading & demonstration">
+            <i data-lucide="fast-forward"></i> Demo: Unlock Next Day
+          </button>
+        </div>
       </div>
     </div>
   </section>

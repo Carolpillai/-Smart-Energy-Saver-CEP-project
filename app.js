@@ -16,10 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: '2', name: 'Ceiling Fan (2 Fans)', watts: 150, hours: 10, days: 30, kwh: 45, cost: 360 },
       { id: '3', name: 'Smart TV', watts: 100, hours: 4, days: 30, kwh: 12, cost: 96 }
     ],
-    habitAnswers: { q0: 15, q1: 15, q2: 15, q3: 8, q4: 8, q5: 8, q6: 8 },
+    habitAnswers: {},
     quizCurrentStep: 0,
-    quizAnswers: [],
-    challengeDays: [1, 2],
+    challengeData: null, // Initialized via loadChallengeState() below
     localityName: 'Green Valley Community',
     researcher1: 'Carol Pillai (Field Lead)',
     researcher2: 'Alex Smith (Tech Lead)'
@@ -1213,14 +1212,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const div = document.createElement('div');
       div.className = 'quiz-question-item';
 
-      const currentAns = state.habitAnswers[q.id] || 8;
+      const currentAns = state.habitAnswers[q.id];
+      const hasAnswer = (currentAns !== undefined);
 
       div.innerHTML = `
         <div class="quiz-q-title">${q.title}</div>
         <div class="quiz-options">
-          <button type="button" class="quiz-opt-btn ${currentAns === q.max ? 'selected' : ''}" data-qid="${q.id}" data-val="${q.max}">Always</button>
-          <button type="button" class="quiz-opt-btn ${currentAns === Math.round(q.max / 2) ? 'selected' : ''}" data-qid="${q.id}" data-val="${Math.round(q.max / 2)}">Sometimes</button>
-          <button type="button" class="quiz-opt-btn ${currentAns === 0 ? 'selected' : ''}" data-qid="${q.id}" data-val="0">Rarely / No</button>
+          <button type="button" class="quiz-opt-btn ${hasAnswer && currentAns === q.max ? 'selected' : ''}" data-qid="${q.id}" data-val="${q.max}">Always</button>
+          <button type="button" class="quiz-opt-btn ${hasAnswer && currentAns === Math.round(q.max / 2) ? 'selected' : ''}" data-qid="${q.id}" data-val="${Math.round(q.max / 2)}">Sometimes</button>
+          <button type="button" class="quiz-opt-btn ${hasAnswer && currentAns === 0 ? 'selected' : ''}" data-qid="${q.id}" data-val="0">Rarely / No</button>
         </div>
       `;
       scoreHabitContainer.appendChild(div);
@@ -1228,9 +1228,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calculateAndAnimateScore() {
+    const answeredCount = Object.keys(state.habitAnswers).length;
     let earned = 0;
     Object.values(state.habitAnswers).forEach(val => earned += val);
-    const score = Math.min(100, Math.max(0, Math.round(earned)));
+    const score = answeredCount === 0 ? 0 : Math.min(100, Math.max(0, Math.round(earned)));
 
     const numElem = document.getElementById('scoreDisplayNum');
     const gaugeCircle = document.getElementById('scoreGaugeProgress');
@@ -1241,12 +1242,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (gaugeCircle) {
       const maxOffset = 565.48; // 2 * PI * 90
-      const offset = maxOffset - (maxOffset * score / 100);
+      const offset = answeredCount === 0 ? maxOffset : (maxOffset - (maxOffset * score / 100));
       gaugeCircle.style.strokeDashoffset = offset;
     }
 
     if (feedbackTitle && feedbackDesc) {
-      if (score >= 80) {
+      if (answeredCount === 0) {
+        feedbackTitle.textContent = 'Habit Diagnostic';
+        feedbackDesc.textContent = 'Answer the habit questions on the right to calculate your household conservation score.';
+      } else if (score >= 80) {
         feedbackTitle.textContent = 'Energy Champion';
         feedbackDesc.textContent = 'Excellent conservation habits! Your household is minimizing avoidable energy waste effectively.';
       } else if (score >= 60) {
@@ -1342,43 +1346,195 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // --------------------------------------------------------------------------
-  // 9. 7-DAY ENERGY CHALLENGE INTERACTIVE TRACKER
+  // 9. 7-DAY ENERGY CHALLENGE INTERACTIVE TRACKER (1 CLICK PER DAY ENFORCEMENT)
   // --------------------------------------------------------------------------
+  const CHALLENGE_STORAGE_KEY = 'smartEnergySaver_challenge_v2';
+
+  function loadChallengeState() {
+    try {
+      const raw = localStorage.getItem(CHALLENGE_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        return {
+          completedDays: Array.isArray(parsed.completedDays) ? parsed.completedDays : [],
+          lastCheckInDate: parsed.lastCheckInDate || null
+        };
+      }
+    } catch (e) {
+      console.warn('Could not load challenge from localStorage', e);
+    }
+    return {
+      completedDays: [],
+      lastCheckInDate: null
+    };
+  }
+
+  function saveChallengeState(completedDays, lastCheckInDate) {
+    try {
+      localStorage.setItem(CHALLENGE_STORAGE_KEY, JSON.stringify({
+        completedDays,
+        lastCheckInDate
+      }));
+    } catch (e) {
+      console.warn('Could not save challenge to localStorage', e);
+    }
+  }
+
+  function getTodayDateString() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // Initialize state challenge data
+  state.challengeData = loadChallengeState();
+
   const daysTracker = document.getElementById('daysTracker');
   const challengeProgressText = document.getElementById('challengeProgressText');
+  const challengeStatusMsg = document.getElementById('challengeStatusMsg');
+  const resetChallengeBtn = document.getElementById('resetChallengeBtn');
+  const simulateNextDayBtn = document.getElementById('simulateNextDayBtn');
 
-  function updateChallengeUI() {
+  function updateChallengeUI(customMessage = null) {
     if (!daysTracker) return;
     const bubbles = daysTracker.querySelectorAll('.day-bubble');
+    const todayStr = getTodayDateString();
+    const completed = state.challengeData.completedDays;
+    const lastDate = state.challengeData.lastCheckInDate;
+    const hasCheckedInToday = (lastDate === todayStr);
+    const nextDayToUnlock = completed.length < 7 ? completed.length + 1 : null;
 
     bubbles.forEach(b => {
       const day = parseInt(b.getAttribute('data-day'));
-      if (state.challengeDays.includes(day)) {
+      b.classList.remove('completed', 'active-today', 'locked', 'shake');
+
+      if (completed.includes(day)) {
         b.classList.add('completed');
+        b.setAttribute('title', `Day ${day}: Completed!`);
+      } else if (day === nextDayToUnlock) {
+        if (hasCheckedInToday) {
+          b.classList.add('locked');
+          b.setAttribute('title', `Day ${day}: Locked until tomorrow.`);
+        } else {
+          b.classList.add('active-today');
+          b.setAttribute('title', `Day ${day}: Ready to log today!`);
+        }
       } else {
-        b.classList.remove('completed');
+        b.classList.add('locked');
+        b.setAttribute('title', `Day ${day}: Locked (complete prior days first).`);
       }
     });
 
     if (challengeProgressText) {
-      challengeProgressText.textContent = `${state.challengeDays.length} of 7 Days Completed`;
+      challengeProgressText.textContent = `${completed.length} of 7 Days Completed`;
+    }
+
+    if (challengeStatusMsg) {
+      if (customMessage) {
+        challengeStatusMsg.innerHTML = customMessage;
+      } else if (completed.length === 7) {
+        challengeStatusMsg.innerHTML = '🏆 <strong>Challenge Completed!</strong> You successfully completed all 7 days of energy conservation!';
+      } else if (hasCheckedInToday) {
+        challengeStatusMsg.innerHTML = `✅ <strong>Day ${completed[completed.length - 1]} logged for today!</strong> Come back tomorrow to unlock Day ${nextDayToUnlock}.`;
+      } else {
+        challengeStatusMsg.innerHTML = `⚡ <strong>Day ${nextDayToUnlock} is ready!</strong> Click Day ${nextDayToUnlock} to record today's habit.`;
+      }
+    }
+
+    if (window.lucide) {
+      window.lucide.createIcons();
     }
   }
 
   if (daysTracker) {
     daysTracker.addEventListener('click', (e) => {
       const bubble = e.target.closest('.day-bubble');
-      if (bubble) {
-        const day = parseInt(bubble.getAttribute('data-day'));
-        if (state.challengeDays.includes(day)) {
-          state.challengeDays = state.challengeDays.filter(d => d !== day);
-        } else {
-          state.challengeDays.push(day);
-        }
-        updateChallengeUI();
+      if (!bubble) return;
+
+      const day = parseInt(bubble.getAttribute('data-day'));
+      const todayStr = getTodayDateString();
+      const completed = state.challengeData.completedDays;
+      const lastDate = state.challengeData.lastCheckInDate;
+      const hasCheckedInToday = (lastDate === todayStr);
+      const nextDayToUnlock = completed.length < 7 ? completed.length + 1 : null;
+
+      // Case 1: Already completed this day
+      if (completed.includes(day)) {
+        bubble.classList.add('shake');
+        setTimeout(() => bubble.classList.remove('shake'), 400);
+        updateChallengeUI(`ℹ️ Day ${day} is already completed.`);
+        return;
+      }
+
+      // Case 2: All 7 days finished
+      if (completed.length >= 7) {
+        updateChallengeUI('🏆 You have completed all 7 days! Fantastic work.');
+        return;
+      }
+
+      // Case 3: Already clicked / logged today (1 click per day rule)
+      if (hasCheckedInToday) {
+        bubble.classList.add('shake');
+        setTimeout(() => bubble.classList.remove('shake'), 400);
+        updateChallengeUI(`🔒 <strong>Daily Limit:</strong> You can only complete 1 day per 24 hours. Day ${nextDayToUnlock} unlocks tomorrow!`);
+        return;
+      }
+
+      // Case 4: Clicked a future day skipping the sequence
+      if (day !== nextDayToUnlock) {
+        bubble.classList.add('shake');
+        setTimeout(() => bubble.classList.remove('shake'), 400);
+        updateChallengeUI(`👉 Please click <strong>Day ${nextDayToUnlock}</strong> first to log today's progress.`);
+        return;
+      }
+
+      // Case 5: Valid check-in for today!
+      state.challengeData.completedDays.push(day);
+      state.challengeData.lastCheckInDate = todayStr;
+      saveChallengeState(state.challengeData.completedDays, state.challengeData.lastCheckInDate);
+
+      const nextUnlocked = day < 7 ? day + 1 : null;
+      const successMsg = nextUnlocked
+        ? `🎉 <strong>Day ${day} Completed!</strong> Great job! Return tomorrow to unlock Day ${nextUnlocked}.`
+        : `🎉 <strong>Day 7 Completed!</strong> Congratulations, you completed the entire 7-day challenge! 🌟`;
+
+      updateChallengeUI(successMsg);
+    });
+  }
+
+  if (resetChallengeBtn) {
+    resetChallengeBtn.addEventListener('click', () => {
+      state.challengeData = {
+        completedDays: [],
+        lastCheckInDate: null
+      };
+      saveChallengeState([], null);
+      updateChallengeUI('🔄 <strong>Tracker Reset:</strong> Day 1 is now ready to log today!');
+    });
+  }
+
+  if (simulateNextDayBtn) {
+    simulateNextDayBtn.addEventListener('click', () => {
+      // Simulate that the last check-in occurred yesterday so today's click is unlocked
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
+      
+      state.challengeData.lastCheckInDate = yesterdayStr;
+      saveChallengeState(state.challengeData.completedDays, yesterdayStr);
+
+      const nextDay = state.challengeData.completedDays.length < 7 ? state.challengeData.completedDays.length + 1 : null;
+      if (nextDay) {
+        updateChallengeUI(`⏩ <strong>Demo Simulated:</strong> Day ${nextDay} is now unlocked and ready to click!`);
+      } else {
+        updateChallengeUI(`🏆 All 7 days are already completed!`);
       }
     });
   }
+
+  // Initial render on page load
   updateChallengeUI();
 
   // --------------------------------------------------------------------------
