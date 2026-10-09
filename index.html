@@ -42,15 +42,20 @@
         <li><a href="#hero" class="active">Home</a></li>
         <li><a href="#problem">Discover</a></li>
         <li><a href="#research">Research</a></li>
-        <li><a href="#calculator">Calculate & Scan</a></li>
+        <li><a href="calculator.html">Calculate & Scan</a></li>
         <li><a href="#score">Energy Score</a></li>
         <li><a href="#take-action">Take Action</a></li>
         <li><a href="#about">About</a></li>
       </ul>
 
       <div class="nav-actions">
+<<<<<<< HEAD
         <a href="#calculator" class="btn btn-primary btn-sm">
           <i class="fa-solid fa-qrcode"></i> Scan Light Bill
+=======
+        <a href="calculator.html" class="btn btn-primary btn-sm">
+          <i data-lucide="scan-line"></i> Scan Light Bill
+>>>>>>> f1cf3dc80a778cba84ed1641ab833778d4af45b9
         </a>
         <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle Navigation">
           <i class="fa-solid fa-bars"></i>
@@ -71,6 +76,7 @@
         <p class="lead">An empirical field research prototype measuring household electricity consumption patterns, identifying avoidable baseline waste, and modeling high-impact conservation habits.</p>
         
         <div class="hero-ctas">
+<<<<<<< HEAD
           <a href="#calculator" class="btn btn-primary">
             <i class="fa-solid fa-qrcode"></i>
             Upload Light Bill (OCR)
@@ -81,8 +87,20 @@
           </a>
           <button type="button" class="btn btn-secondary" id="loadDemoDataBtn">
             <i class="fa-solid fa-circle-play"></i>
+=======
+          <a href="calculator.html" class="btn btn-primary">
+            <i data-lucide="scan-line"></i>
+            Upload Light Bill (OCR)
+          </a>
+          <a href="calculator.html" class="btn btn-secondary">
+            <i data-lucide="calculator"></i>
+            Energy Calculator
+          </a>
+          <a href="calculator.html" class="btn btn-secondary" id="loadDemoDataBtn">
+            <i data-lucide="play-circle"></i>
+>>>>>>> f1cf3dc80a778cba84ed1641ab833778d4af45b9
             Load Sample Household
-          </button>
+          </a>
         </div>
       </div>
 
@@ -395,6 +413,7 @@
   </section>
 
   <!-- UNIFIED INTERACTIVE ENERGY INTELLIGENCE & CALCULATOR SECTION -->
+  <!-- INTERACTIVE CALCULATOR & OCR SCANNER SHOWCASE -->
   <section class="section section-teal" id="calculator">
     <div class="container">
       <div class="section-header" style="color: #FFFFFF;">
@@ -402,9 +421,10 @@
           <i class="fa-solid fa-bolt-lightning" style="font-size: 14px;"></i> 03 / Interactive Energy Intelligence
         </span>
         <h2 style="color: #FFFFFF;">Calculate & Diagnose Household Energy</h2>
-        <p style="color: rgba(224, 235, 240, 0.9);">Upload your light bill photo to auto-extract units and tariff slab rates, or search appliance models to calculate your footprint interactively.</p>
+        <p style="color: rgba(224, 235, 240, 0.9);">We've built an interactive diagnostic suite equipped with Optical Character Recognition (OCR), verified appliance power databases, and PDF audit generation.</p>
       </div>
 
+<<<<<<< HEAD
       <div class="calculator-container">
         <!-- Input Form Card (Photo OCR Upload + Appliance Model Directory) -->
         <div class="calc-card">
@@ -670,27 +690,42 @@
               </button>
             </div>
           </form>
+=======
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <!-- Showcase Feature 1 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="scan-line" style="width: 26px; height: 26px;"></i>
+            </div>
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Light Bill Photo OCR Scanner</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Upload or take a live camera picture of your electricity bill. The Tesseract OCR engine auto-extracts consumed units (kWh) and verifies slab billing tariffs in seconds.
+            </p>
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">⚡ Instant Unit Extraction</span>
+          </div>
+>>>>>>> f1cf3dc80a778cba84ed1641ab833778d4af45b9
         </div>
 
-        <!-- Result Display -->
-        <div class="calc-results-card">
+        <!-- Showcase Feature 2 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
           <div>
-            <div class="calc-header">
-              <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-soft-sage); text-transform: uppercase; letter-spacing: 0.08em;">Estimated Consumption</span>
-              <h3 style="font-size: 1.5rem; margin-top: 0.2rem;" id="resApplianceTitle">Air Conditioner</h3>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="cpu" style="width: 26px; height: 26px;"></i>
             </div>
-
-            <div class="result-metric">
-              <div class="metric-val" id="resMonthlyKwh">270 kWh</div>
-              <div class="metric-sub">Monthly Electricity Consumption</div>
-            </div>
-
-            <div class="result-metric">
-              <div class="metric-val" style="color: #FFFFFF;" id="resMonthlyCost">₹2,160</div>
-              <div class="metric-sub" id="resTariffLabel">Estimated Monthly Energy Cost (Flat Rate)</div>
-            </div>
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Appliance Model & Power Directory</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Search specific brand models (e.g. Daikin Inverter AC, Samsung Fridge, Atomberg BLDC Fans) to retrieve laboratory power draw specs and calculate operating cost in real-time.
+            </p>
           </div>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">🔍 Certified Watt Ratings</span>
+          </div>
+        </div>
 
+<<<<<<< HEAD
           <!-- Savings Comparison Visual -->
           <div class="comparison-box">
             <h5>
@@ -726,11 +761,26 @@
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem;" id="envBadgesBox">
               <span style="font-size: 0.75rem; background: rgba(139,187,146,0.2); color: var(--color-soft-sage); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-weight: 600;" id="treeBadge">🌳 ~2 Trees Planted / yr</span>
               <span style="font-size: 0.75rem; background: rgba(139,187,146,0.2); color: var(--color-soft-sage); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-weight: 600;" id="carBadge">🚗 ~185 km Driving Offset</span>
+=======
+        <!-- Showcase Feature 3 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="file-text" style="width: 26px; height: 26px;"></i>
+>>>>>>> f1cf3dc80a778cba84ed1641ab833778d4af45b9
             </div>
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Multi-Appliance Audit & PDF Report</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Compile all household appliances into an aggregated consumption snapshot, identify your largest energy hog, and generate a printable PDF energy audit report.
+            </p>
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">📄 Printable PDF Export</span>
           </div>
         </div>
       </div>
 
+<<<<<<< HEAD
       <!-- MULTI-APPLIANCE SNAPSHOT -->
       <div class="snapshot-container" id="snapshotSection">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
@@ -785,6 +835,19 @@
             <div style="font-size: 0.8rem; color: var(--color-text-muted);" id="snapLargestDetail">Add items to identify hog</div>
           </div>
         </div>
+=======
+      <!-- Main Action Call to Action Banner -->
+      <div style="text-align: center; background: rgba(0,0,0,0.2); padding: 2.5rem; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.15); max-width: 780px; margin: 0 auto;">
+        <h3 style="font-size: 1.8rem; color: #FFFFFF; margin-bottom: 0.75rem;">Ready to Calculate Your Household Power?</h3>
+        <p style="color: rgba(224, 235, 240, 0.9); margin-bottom: 1.75rem; font-size: 1.05rem;">
+          Launch our dedicated calculation suite to run bill scans, compare inverter models, and analyze tiered utility slabs.
+        </p>
+        <a href="calculator.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.85rem 2rem; display: inline-flex; align-items: center; gap: 0.6rem;">
+          <i data-lucide="calculator" style="width: 20px; height: 20px;"></i>
+          Open Calculate & Scan Page
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+        </a>
+>>>>>>> f1cf3dc80a778cba84ed1641ab833778d4af45b9
       </div>
     </div>
   </section>
@@ -1026,7 +1089,7 @@
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
             <li><a href="#hero">Home</a></li>
             <li><a href="#problem">Discover</a></li>
-            <li><a href="#calculator">Calculator</a></li>
+            <li><a href="calculator.html">Calculate & Scan</a></li>
             <li><a href="#score">Energy Score</a></li>
             <li><a href="#take-action">Take Action</a></li>
           </ul>
