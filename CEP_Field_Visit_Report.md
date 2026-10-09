@@ -52,16 +52,37 @@ This project bridges the gap between DSM theory and residential habits by pairin
 
 # Chapter 3: Methodology
 
-## 3.1 Data Collection Approach and Tools
-A mixed-methods approach was used across 15+ households:
-1. **Quantitative Digital Survey:** 12-question Google Form ([Survey Link](https://forms.gle/a3X9WdD279FtXXW57)) measuring appliance ownership, awareness, and tool willingness.
-2. **Observational Field Audits:** Physical inspection of appliance nameplates, socket standby LEDs, and lighting types.
-3. **Semi-Structured Interviews:** Qualitative discussions with bill-payers regarding usage barriers and habit friction.
-4. **Archival Bill Analysis:** Review of monthly electricity bills and utility tariff slab structures.
-5. **Automated Live CSV Engine:** Google Form responses link to a live Google Sheet CSV feed, automatically updating website charts in real time via JavaScript (`app.js`).
+## 3.1 Research Design and Overall Approach
+This field study adopted a comprehensive mixed-methods research framework combining quantitative digital survey instrumentation, direct physical observational audits, qualitative semi-structured interviews, archival utility bill analysis, and automated digital data integration. The research targeted 15+ residential households (reaching 65+ residents) within the suburban community of Green Valley Community to investigate household energy management practices and literacy levels.
 
-## 3.2 Rationale Behind Chosen Methods
-* **Triangulation:** Combining surveys with physical observational audits eliminated self-reporting bias (verifying stated habits against active standby LEDs).
-* **Mixed-Methods Synergy:** Quantitative data established statistical awareness rates, while interviews revealed behavioral friction.
-* **Automated Integration:** The live CSV pipeline ensures ongoing survey responses update project visualizations without code edits.
-* **Ethics & Consent:** All field visits were conducted with informed consent from adult household decision-makers.
+## 3.2 Data Collection Methods and Instruments
+
+1. Quantitative Digital Survey Instrument
+A structured 12-question digital survey was deployed via Google Forms (Household Energy Usage & Awareness Survey). The survey evaluated household demographic occupancy, regular appliance inventories, resident perceptions of highest-consuming appliances, frequency of electricity bill monitoring, standby device unplugging practices, barriers to energy conservation, and willingness to adopt digital energy tools.
+
+2. Direct Observational Field Audits
+Field researchers conducted physical, in-situ audits across representative residential units. These audits involved inspecting manufacturer nameplate ratings (Watts/kW) on major thermal and motor loads (Air Conditioners, Electric Geysers, Refrigerators), evaluating socket switch positions for idle devices (televisions, set-top boxes, chargers), and assessing lighting types (LED vs CFL vs incandescent).
+
+3. Semi-Structured Resident Interviews
+Qualitative interviews were conducted with primary household decision-makers and residents. The interviews explored individual usage habits, reasons for intra-household non-cooperation, barriers to reading utility bills, and perceived obstacles to reducing consumption.
+
+4. Archival Utility Bill Analysis
+Physical utility bills provided by households were reviewed to analyze monthly kilowatt-hour (kWh) unit consumption trends, seasonal demand variations (summer cooling vs winter heating), and the application of progressive utility tariff slab rates.
+
+5. Automated Digital Data Pipeline
+To ensure continuous data synchronization without manual data entry errors, responses from the Google Form were connected to a live Google Sheet published as a Comma-Separated Values (CSV) feed. JavaScript logic (app.js) parses this live data stream to dynamically update community stats and visualization charts in real time.
+
+## 3.3 Rationale Behind Methodological Choices
+
+1. Triangulation to Eliminate Self-Reporting Bias
+Combining self-reported survey answers with direct observational audits eliminated social desirability bias. Observational checks enabled researchers to verify stated habits against physical evidence, such as active standby indicator lights on wall sockets.
+
+2. Mixed-Methods Synergy
+Quantitative survey metrics established statistical awareness levels across the community, while qualitative interviews revealed the underlying human behaviors and routine friction driving energy waste.
+
+3. Real-Time Automated Data Synchronization
+Building an automated CSV integration ensured that ongoing survey submissions immediately update project analytics without requiring manual code modifications or recalculations.
+
+4. Ethical Considerations and Privacy
+All field research activities were executed with explicit informed consent from adult household decision-makers. Participant data was anonymized and securely processed to protect household privacy.
+
