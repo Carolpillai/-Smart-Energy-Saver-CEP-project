@@ -64,8 +64,14 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-img, svg {
+img {
   display: block;
+  max-width: 100%;
+}
+
+svg {
+  display: inline-block;
+  vertical-align: middle;
   max-width: 100%;
 }
 
@@ -432,6 +438,9 @@ h1, h2, h3, .heading-serif {
 }
 
 .hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   background: rgba(42, 131, 95, 0.2);
   border: 1px solid rgba(139, 187, 146, 0.3);
   color: var(--color-soft-sage);
