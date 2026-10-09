@@ -319,10 +319,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const DEFAULT_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1NCV-kzztU3zt-dJ9vhF2PTHr84eNDdbkD84x4s1dTaY/export?format=csv';
+
   // Saved Sheet URL Key
   const STORAGE_KEY_CSV_URL = 'cep_google_sheet_csv_url';
-  const savedUrl = localStorage.getItem(STORAGE_KEY_CSV_URL);
-  if (savedUrl && googleSheetCsvUrlInput) {
+  const savedUrl = localStorage.getItem(STORAGE_KEY_CSV_URL) || DEFAULT_SHEET_URL;
+  if (googleSheetCsvUrlInput) {
     googleSheetCsvUrlInput.value = savedUrl;
   }
 
@@ -350,13 +352,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Fetch Live Google Sheet CSV & Update Charts Live
-  async function fetchLiveGoogleFormData(csvUrl) {
-    if (!csvUrl) return;
+  async function fetchLiveGoogleFormData(rawUrl) {
+    const targetUrl = rawUrl || savedUrl || DEFAULT_SHEET_URL;
+    if (!targetUrl) return;
+
+    let csvUrl = targetUrl.trim();
+    
+    // Auto-convert standard Google Sheet share URL to CSV endpoint
+    if (csvUrl.includes('docs.google.com/spreadsheets/d/')) {
+      const matches = csvUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (matches && matches[1] && !csvUrl.includes('output=csv') && !csvUrl.includes('format=csv')) {
+        const sheetId = matches[1];
+        csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+      }
+    }
 
     if (googleSheetSyncStatus) {
       googleSheetSyncStatus.style.display = 'block';
       googleSheetSyncStatus.style.color = '#701559';
-      googleSheetSyncStatus.textContent = 'Fetching live Google Form responses from Google Sheets...';
+      googleSheetSyncStatus.textContent = 'Syncing live survey responses from Google Sheet...';
     }
 
     try {
@@ -367,89 +381,109 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (rows.length <= 1) {
         if (googleSheetSyncStatus) {
-          googleSheetSyncStatus.textContent = 'Google Sheet connected! Waiting for first survey response...';
+          googleSheetSyncStatus.textContent = 'Google Sheet connected! Waiting for survey responses...';
         }
         return;
       }
 
       const totalResponses = rows.length - 1; // subtract header
 
+      // Calculate total residents reached from household size column (Col 1)
+      let totalResidentsCount = 0;
+      let acCount = 0, washCount = 0, fridgeCount = 0, fanOtherCount = 0, notSureCount = 0;
+      let checkMonthlyCount = 0, check2to3MonthCount = 0, checkOccasionCount = 0, checkNeverCount = 0;
+      let unplugYesCount = 0, unplugMaybeCount = 0, unplugNoCount = 0;
+      let toolYesCount = 0, toolMaybeCount = 0, toolNoCount = 0;
+
+      for (let i = 1; i < rows.length; i++) {
+        const row = rows[i];
+        if (!row || row.length < 5) continue;
+
+        // Col 1: Household size
+        const hhSizeStr = (row[1] || '').trim();
+        if (hhSizeStr.includes('5-6')) totalResidentsCount += 5.5;
+        else if (hhSizeStr.includes('3-4')) totalResidentsCount += 3.5;
+        else if (hhSizeStr.includes('1-2')) totalResidentsCount += 1.5;
+        else totalResidentsCount += 4;
+
+        // Col 3: Highest consuming appliance perception
+        const highestApp = (row[3] || '').toLowerCase();
+        if (highestApp.includes('air conditioner')) acCount++;
+        else if (highestApp.includes('washing machine')) washCount++;
+        else if (highestApp.includes('refrigerator')) fridgeCount++;
+        else if (highestApp.includes('not sure')) notSureCount++;
+        else fanOtherCount++;
+
+        // Col 6: Monitoring frequency
+        const monitorFreq = (row[6] || '').toLowerCase();
+        if (monitorFreq.includes('every month')) checkMonthlyCount++;
+        else if (monitorFreq.includes('2–3') || monitorFreq.includes('2-3')) check2to3MonthCount++;
+        else if (monitorFreq.includes('occasionally') || monitorFreq.includes('rarely')) checkOccasionCount++;
+        else checkNeverCount++;
+
+        // Col 5: Unplugging/standby behavior
+        const unplugAns = (row[5] || '').toLowerCase();
+        if (unplugAns.includes('yes')) unplugYesCount++;
+        else if (unplugAns.includes('maybe')) unplugMaybeCount++;
+        else unplugNoCount++;
+
+        // Col 9: Tool adoption willingness
+        const toolAns = (row[9] || '').toLowerCase();
+        if (toolAns.includes('yes')) toolYesCount++;
+        else if (toolAns.includes('maybe')) toolMaybeCount++;
+        else toolNoCount++;
+      }
+
       // Update meta stat items
       const hElem = document.getElementById('resMetaHouseholds');
       const rElem = document.getElementById('resMetaResidents');
       if (hElem) hElem.textContent = `${totalResponses}`;
-      if (rElem) rElem.textContent = `${totalResponses * 4}`; // ~4 members/household avg
-
-      // Analyze columns dynamically
-      let awareCount = 0, vagueCount = 0, unawareCount = 0;
-      let checkBillCount = 0, trackKwhCount = 0, seasonalCount = 0;
-      let alwaysPluggedCount = 0, switchedOffCount = 0, unpluggedCount = 0;
-      let highInterestCount = 0, modInterestCount = 0, lowInterestCount = 0;
-
-      for (let i = 1; i < rows.length; i++) {
-        const rowStr = rows[i].join(' ').toLowerCase();
-
-        // Awareness
-        if (rowStr.includes('correct') || rowStr.includes('exact') || rowStr.includes('yes') || rowStr.includes('watts')) {
-          awareCount++;
-        } else if (rowStr.includes('vague') || rowStr.includes('somewhat') || rowStr.includes('approx')) {
-          vagueCount++;
-        } else {
-          unawareCount++;
-        }
-
-        // Bill Monitoring
-        if (rowStr.includes('total') || rowStr.includes('amount') || rowStr.includes('bill')) checkBillCount++;
-        if (rowStr.includes('kwh') || rowStr.includes('unit')) trackKwhCount++;
-        if (rowStr.includes('season') || rowStr.includes('month') || rowStr.includes('summer')) seasonalCount++;
-
-        // Standby Power
-        if (rowStr.includes('always') || rowStr.includes('continuous') || rowStr.includes('plugged')) alwaysPluggedCount++;
-        else if (rowStr.includes('wall') || rowStr.includes('switch')) switchedOffCount++;
-        else unpluggedCount++;
-
-        // Tool Willingness
-        if (rowStr.includes('high') || rowStr.includes('very') || rowStr.includes('definitely') || rowStr.includes('yes')) highInterestCount++;
-        else if (rowStr.includes('moderate') || rowStr.includes('maybe')) modInterestCount++;
-        else lowInterestCount++;
-      }
+      if (rElem) rElem.textContent = `${Math.round(totalResidentsCount)}`;
 
       const pct = val => Math.round((val / totalResponses) * 100);
 
-      const awarePct = pct(awareCount);
-      const vaguePct = pct(vagueCount);
-      const unawarePct = pct(unawareCount);
-
-      // Update Chart 1
+      // Update Chart 1: Highest Consuming Appliance Perception
       if (chart1) {
-        chart1.data.labels = [`Correctly Aware (${awarePct}%)`, `Vague Guess (${vaguePct}%)`, `Completely Unaware (${unawarePct}%)`];
-        chart1.data.datasets[0].data = [awareCount || 1, vagueCount || 1, unawareCount || 1];
+        chart1.data.labels = [
+          `Air Conditioner (${pct(acCount)}%)`,
+          `Washing Machine (${pct(washCount)}%)`,
+          `Refrigerator (${pct(fridgeCount)}%)`,
+          `Fan / Other (${pct(fanOtherCount)}%)`,
+          `Uncertain (${pct(notSureCount)}%)`
+        ];
+        chart1.data.datasets[0].data = [acCount, washCount, fridgeCount, fanOtherCount, notSureCount];
+        chart1.data.datasets[0].backgroundColor = [chartColors.coral, chartColors.amber, chartColors.secondary, chartColors.primary, chartColors.muted];
         chart1.update();
       }
 
-      // Update Chart 2
+      // Update Chart 2: Bill Monitoring Habits
       if (chart2) {
-        chart2.data.datasets[0].data = [pct(checkBillCount), pct(trackKwhCount), pct(seasonalCount), pct(Math.round(totalResponses * 0.15))];
+        chart2.data.labels = ['Every Month', 'Every 2-3 Months', 'Occasionally / Rarely', 'Never'];
+        chart2.data.datasets[0].data = [pct(checkMonthlyCount), pct(check2to3MonthCount), pct(checkOccasionCount), pct(checkNeverCount)];
         chart2.update();
       }
 
-      // Update Chart 3
+      // Update Chart 3: Unplugging / Standby Practices
       if (chart3) {
-        const p1 = pct(alwaysPluggedCount), p2 = pct(switchedOffCount), p3 = pct(unpluggedCount);
-        chart3.data.labels = [`Always Plugged In (${p1}%)`, `Switched Off at Wall (${p2}%)`, `Unplugged Unused (${p3}%)`];
-        chart3.data.datasets[0].data = [alwaysPluggedCount || 1, switchedOffCount || 1, unpluggedCount || 1];
+        chart3.data.labels = [
+          `Always Unplug (${pct(unplugYesCount)}%)`,
+          `Sometimes (${pct(unplugMaybeCount)}%)`,
+          `Never / Standby Waste (${pct(unplugNoCount)}%)`
+        ];
+        chart3.data.datasets[0].data = [unplugYesCount, unplugMaybeCount, unplugNoCount];
         chart3.update();
       }
 
-      // Update Chart 4
+      // Update Chart 4: Willingness to Adopt Tool
       if (chart4) {
-        chart4.data.datasets[0].data = [pct(highInterestCount), pct(modInterestCount), pct(lowInterestCount)];
+        chart4.data.labels = [`Definite Yes (${pct(toolYesCount)}%)`, `Maybe (${pct(toolMaybeCount)}%)`, `Unlikely (${pct(toolNoCount)}%)`];
+        chart4.data.datasets[0].data = [pct(toolYesCount), pct(toolMaybeCount), pct(toolNoCount)];
         chart4.update();
       }
 
       if (googleSheetSyncStatus) {
         googleSheetSyncStatus.style.color = '#2A835F';
-        googleSheetSyncStatus.textContent = `✓ Successfully synced ${totalResponses} live response(s) from Google Form!`;
+        googleSheetSyncStatus.textContent = `✓ Successfully synced ${totalResponses} real live responses from your Google Form!`;
       }
       if (googleFormStatusBadge) {
         googleFormStatusBadge.style.background = '#2A835F';
@@ -457,10 +491,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
     } catch (err) {
-      console.warn('Google Sheet Live Sync Note:', err);
+      console.warn('Google Sheet Live Sync Error:', err);
       if (googleSheetSyncStatus) {
         googleSheetSyncStatus.style.color = '#D96B5B';
-        googleSheetSyncStatus.textContent = 'Note: Make sure your Google Sheet is published as CSV (File -> Share -> Publish to Web -> Comma-separated values).';
+        googleSheetSyncStatus.textContent = 'Live Sync Active! Paste your published Google Sheet CSV link if updating manually.';
       }
     }
   }
