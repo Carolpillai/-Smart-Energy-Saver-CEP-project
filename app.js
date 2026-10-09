@@ -351,8 +351,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Fetch Live Google Sheet CSV & Update Charts Live
-  async function fetchLiveGoogleFormData(csvUrl) {
-    if (!csvUrl) return;
+  async function fetchLiveGoogleFormData(rawUrl) {
+    if (!rawUrl) return;
+
+    let csvUrl = rawUrl.trim();
+    
+    // Auto-convert standard Google Sheet share URL to CSV endpoint
+    if (csvUrl.includes('docs.google.com/spreadsheets/d/')) {
+      const matches = csvUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (matches && matches[1] && !csvUrl.includes('output=csv') && !csvUrl.includes('format=csv')) {
+        const sheetId = matches[1];
+        csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/export?format=csv`;
+      }
+    }
 
     if (googleSheetSyncStatus) {
       googleSheetSyncStatus.style.display = 'block';
