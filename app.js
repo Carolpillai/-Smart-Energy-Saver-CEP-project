@@ -934,6 +934,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateCalculatorResults() {
+    if (!calcWatts || !calcHours || !calcDays || !calcTariff) return;
+    const resApplianceTitle = document.getElementById('resApplianceTitle');
+    if (!resApplianceTitle) return;
+
     const watts = parseFloat(calcWatts.value) || 0;
     const hours = parseFloat(calcHours.value) || 0;
     const days = parseFloat(calcDays.value) || 0;
@@ -952,23 +956,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedCost = monthlyCost - reducedCost;
 
     // DOM Updates
-    document.getElementById('resApplianceTitle').textContent = getSelectedApplianceName();
-    document.getElementById('resMonthlyKwh').textContent = `${monthlyKwh.toFixed(1)} kWh`;
-    document.getElementById('resMonthlyCost').textContent = `₹${Math.round(monthlyCost).toLocaleString()}`;
+    resApplianceTitle.textContent = getSelectedApplianceName();
+    const resMonthlyKwh = document.getElementById('resMonthlyKwh');
+    const resMonthlyCost = document.getElementById('resMonthlyCost');
+    if (resMonthlyKwh) resMonthlyKwh.textContent = `${monthlyKwh.toFixed(1)} kWh`;
+    if (resMonthlyCost) resMonthlyCost.textContent = `₹${Math.round(monthlyCost).toLocaleString()}`;
     
     const resTariffLabel = document.getElementById('resTariffLabel');
     if (resTariffLabel) {
       resTariffLabel.textContent = mode === 'tiered' ? 'Estimated Monthly Cost (Tiered Utility Slabs)' : 'Estimated Monthly Cost (Flat Rate)';
     }
 
-    document.getElementById('compCurrentVal').textContent = `${monthlyKwh.toFixed(1)} kWh`;
-    document.getElementById('compReducedVal').textContent = `${reducedKwh.toFixed(1)} kWh`;
+    const compCurrentVal = document.getElementById('compCurrentVal');
+    const compReducedVal = document.getElementById('compReducedVal');
+    if (compCurrentVal) compCurrentVal.textContent = `${monthlyKwh.toFixed(1)} kWh`;
+    if (compReducedVal) compReducedVal.textContent = `${reducedKwh.toFixed(1)} kWh`;
 
     const reducedPercent = monthlyKwh > 0 ? (reducedKwh / monthlyKwh) * 100 : 0;
-    document.getElementById('barFillReduced').style.width = `${reducedPercent.toFixed(1)}%`;
+    const barFillReduced = document.getElementById('barFillReduced');
+    if (barFillReduced) barFillReduced.style.width = `${reducedPercent.toFixed(1)}%`;
 
-    document.getElementById('savingsText').textContent = 
-      `Potential Savings: ${savedKwh.toFixed(1)} kWh/month (Save ₹${Math.round(savedCost).toLocaleString()}/month)`;
+    const savingsText = document.getElementById('savingsText');
+    if (savingsText) {
+      savingsText.textContent = `Potential Savings: ${savedKwh.toFixed(1)} kWh/month (Save ₹${Math.round(savedCost).toLocaleString()}/month)`;
+    }
 
     // Environmental Badges
     const trees = Math.max(1, Math.round(savedKwh * 0.037 * 12));
@@ -1005,7 +1016,11 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSnapshotTable();
 
       const calcElem = document.getElementById('calculator');
-      if (calcElem) calcElem.scrollIntoView({ behavior: 'smooth' });
+      if (calcElem) {
+        calcElem.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.location.href = 'calculator.html';
+      }
     });
   }
 
@@ -1174,15 +1189,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    document.getElementById('snapTotalKwh').textContent = `${totalKwh.toFixed(1)} kWh`;
-    document.getElementById('snapTotalCost').textContent = `₹${Math.round(totalCost).toLocaleString()}`;
+    const snapTotalKwh = document.getElementById('snapTotalKwh');
+    const snapTotalCost = document.getElementById('snapTotalCost');
+    if (snapTotalKwh) snapTotalKwh.textContent = `${totalKwh.toFixed(1)} kWh`;
+    if (snapTotalCost) snapTotalCost.textContent = `₹${Math.round(totalCost).toLocaleString()}`;
 
-    if (largestApp) {
-      document.getElementById('snapLargestAppliance').textContent = largestApp.name;
-      document.getElementById('snapLargestDetail').textContent = `${largestApp.kwh.toFixed(1)} kWh/month (${Math.round((largestApp.kwh / totalKwh) * 100)}% of home usage)`;
-    } else {
-      document.getElementById('snapLargestAppliance').textContent = 'None Added';
-      document.getElementById('snapLargestDetail').textContent = 'Add items to identify hog';
+    const snapLargestAppliance = document.getElementById('snapLargestAppliance');
+    const snapLargestDetail = document.getElementById('snapLargestDetail');
+    if (snapLargestAppliance) {
+      if (largestApp) {
+        snapLargestAppliance.textContent = largestApp.name;
+        if (snapLargestDetail) snapLargestDetail.textContent = `${largestApp.kwh.toFixed(1)} kWh/month (${Math.round((largestApp.kwh / totalKwh) * 100)}% of home usage)`;
+      } else {
+        snapLargestAppliance.textContent = 'None Added';
+        if (snapLargestDetail) snapLargestDetail.textContent = 'Add items to identify hog';
+      }
     }
 
     if (window.lucide) window.lucide.createIcons();

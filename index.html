@@ -42,14 +42,14 @@
         <li><a href="#hero" class="active">Home</a></li>
         <li><a href="#problem">Discover</a></li>
         <li><a href="#research">Research</a></li>
-        <li><a href="#calculator">Calculate & Scan</a></li>
+        <li><a href="calculator.html">Calculate & Scan</a></li>
         <li><a href="#score">Energy Score</a></li>
         <li><a href="#take-action">Take Action</a></li>
         <li><a href="#about">About</a></li>
       </ul>
 
       <div class="nav-actions">
-        <a href="#calculator" class="btn btn-primary btn-sm">
+        <a href="calculator.html" class="btn btn-primary btn-sm">
           <i data-lucide="scan-line"></i> Scan Light Bill
         </a>
         <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle Navigation">
@@ -71,18 +71,18 @@
         <p class="lead">An empirical field research prototype measuring household electricity consumption patterns, identifying avoidable baseline waste, and modeling high-impact conservation habits.</p>
         
         <div class="hero-ctas">
-          <a href="#calculator" class="btn btn-primary">
+          <a href="calculator.html" class="btn btn-primary">
             <i data-lucide="scan-line"></i>
             Upload Light Bill (OCR)
           </a>
-          <a href="#calculator" class="btn btn-secondary">
+          <a href="calculator.html" class="btn btn-secondary">
             <i data-lucide="calculator"></i>
             Energy Calculator
           </a>
-          <button type="button" class="btn btn-secondary" id="loadDemoDataBtn">
+          <a href="calculator.html" class="btn btn-secondary" id="loadDemoDataBtn">
             <i data-lucide="play-circle"></i>
             Load Sample Household
-          </button>
+          </a>
         </div>
       </div>
 
@@ -395,6 +395,7 @@
   </section>
 
   <!-- UNIFIED INTERACTIVE ENERGY INTELLIGENCE & CALCULATOR SECTION -->
+  <!-- INTERACTIVE CALCULATOR & OCR SCANNER SHOWCASE -->
   <section class="section section-teal" id="calculator">
     <div class="container">
       <div class="section-header" style="color: #FFFFFF;">
@@ -402,389 +403,70 @@
           <i data-lucide="zap" style="width: 14px;"></i> 03 / Interactive Energy Intelligence
         </span>
         <h2 style="color: #FFFFFF;">Calculate & Diagnose Household Energy</h2>
-        <p style="color: rgba(224, 235, 240, 0.9);">Upload your light bill photo to auto-extract units and tariff slab rates, or search appliance models to calculate your footprint interactively.</p>
+        <p style="color: rgba(224, 235, 240, 0.9);">We've built an interactive diagnostic suite equipped with Optical Character Recognition (OCR), verified appliance power databases, and PDF audit generation.</p>
       </div>
 
-      <div class="calculator-container">
-        <!-- Input Form Card (Photo OCR Upload + Appliance Model Directory) -->
-        <div class="calc-card">
-
-          <!-- OPTION A: UPLOAD OR SNAP LIGHT BILL PHOTO -->
-          <div style="background: rgba(42, 131, 95, 0.06); border: 1.5px dashed var(--color-fresh-green); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-              <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--color-deep-teal); margin: 0; display: flex; align-items: center; gap: 0.45rem;">
-                <i data-lucide="camera" style="width: 18px; color: var(--color-fresh-green);"></i>
-                Upload or Snap Light Bill Photo
-              </h4>
-              <span class="ocr-badge" style="background: var(--color-deep-teal); color: #fff; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600;">
-                <i data-lucide="cpu" style="width: 12px; margin-right: 3px;"></i> OCR Engine
-              </span>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <!-- Showcase Feature 1 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="scan-line" style="width: 26px; height: 26px;"></i>
             </div>
-
-            <!-- Drag and Drop Zone -->
-            <div class="ocr-dropzone" id="ocrDropzone" style="background: #ffffff; border-color: rgba(42,131,95,0.3); padding: 1.25rem 1rem;">
-              <input type="file" id="billFileInput" accept="image/*,.pdf" style="display: none;">
-              <input type="file" id="cameraFileInput" accept="image/*" capture="environment" style="display: none;">
-              
-              <div class="ocr-dropzone-content" id="ocrDropzoneContent">
-                <div class="ocr-icon-circle" style="width: 44px; height: 44px; margin: 0 auto 0.5rem auto; background: rgba(42, 131, 95, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                  <i data-lucide="file-text" style="width: 24px; height: 24px; color: var(--color-fresh-green);"></i>
-                </div>
-                <h5 style="font-size: 0.95rem; margin-bottom: 0.2rem; color: var(--color-primary-dark);">Drag & Drop Light Bill, or Take Photo</h5>
-                <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 0.85rem;">Browse file from gallery or snap live camera photo</p>
-                
-                <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('billFileInput').click()" style="padding: 0.45rem 0.85rem;">
-                    <i data-lucide="folder-open" style="width: 14px;"></i> Browse File
-                  </button>
-                  <button type="button" class="btn btn-secondary btn-sm" id="openCameraBtn" style="padding: 0.45rem 0.85rem; background: rgba(42, 131, 95, 0.15); color: var(--color-deep-teal); border-color: var(--color-fresh-green);">
-                    <i data-lucide="camera" style="width: 14px;"></i> Take Photo With Camera
-                  </button>
-                </div>
-              </div>
-
-              <!-- Scanner Visual Screen (Initially Hidden) -->
-              <div class="ocr-scanner-screen" id="ocrScannerScreen" style="display: none;">
-                <div class="scanner-preview-box">
-                  <img id="ocrPreviewImg" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="Light Bill Preview">
-                  <div class="laser-scanner-line" id="laserScannerLine"></div>
-                  <div class="ocr-status-overlay" id="ocrStatusOverlay">
-                    <div class="spinner-sm"></div>
-                    <span id="ocrStatusText">Running Tesseract OCR Engine...</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Scan Completed & Verified Screen (Initially Hidden) -->
-              <div class="ocr-success-screen" id="ocrSuccessScreen" style="display: none;">
-                <div class="ocr-success-badge" style="background: rgba(42, 131, 95, 0.15); color: var(--color-deep-teal); padding: 0.35rem 0.75rem; border-radius: 4px; font-weight: 700; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 0.75rem;">
-                  <i data-lucide="check-circle" style="width: 16px; height: 16px; color: var(--color-fresh-green);"></i>
-                  <span>OCR Scan Completed & Verified</span>
-                </div>
-
-                <div class="scanned-bill-card" style="background: rgba(18, 84, 79, 0.05); border: 1px solid var(--color-border); padding: 0.75rem; border-radius: var(--radius-sm); display: flex; gap: 0.75rem; align-items: center;">
-                  <div class="scanned-img-box" style="width: 60px; height: 60px; border-radius: 4px; overflow: hidden; flex-shrink: 0;">
-                    <img id="ocrSuccessImg" src="" alt="Scanned Bill Thumbnail" style="width: 100%; height: 100%; object-fit: cover;">
-                  </div>
-                  <div class="scanned-info-box" style="text-align: left;">
-                    <div style="font-size: 0.7rem; color: var(--color-fresh-green); text-transform: uppercase; font-weight: 700;">Scanned Document</div>
-                    <h4 style="font-size: 0.95rem; color: var(--color-primary-dark); margin: 0.1rem 0 0.3rem 0;" id="ocrSuccessTitle">Summer Heavy AC Connection</h4>
-                    
-                    <div class="scanned-pills" style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
-                      <span class="scanned-pill" id="ocrSuccessUnits" style="background: #fff; color: var(--color-primary-dark); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border);">⚡ 480 kWh</span>
-                      <span class="scanned-pill" id="ocrSuccessAmount" style="background: #fff; color: var(--color-primary-dark); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--color-border);">💰 ₹4,120</span>
-                      <span class="scanned-pill success-tag" style="background: rgba(42, 131, 95, 0.15); color: var(--color-deep-teal); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700;">✓ Verified</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
-                  <button type="button" class="btn btn-outline btn-sm" id="uploadAnotherBillBtn" style="color: var(--color-deep-teal); border-color: var(--color-border); flex: 1; padding: 0.4rem 0.6rem; font-size: 0.75rem;">
-                    <i data-lucide="upload" style="width: 13px;"></i> Upload Another Photo
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Sample Bill Selector -->
-            <div style="margin-top: 0.85rem;">
-              <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-deep-teal); margin-bottom: 0.4rem;">
-                Don't have a bill photo handy? Click a Sample Bill:
-              </div>
-              <div class="sample-bills-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem;">
-                <button type="button" class="sample-bill-btn" data-sample="heavy" style="padding: 0.5rem; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-align: left; cursor: pointer;">
-                  <div class="sample-title" style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark);">Heavy AC Bill</div>
-                  <div class="sample-sub" style="font-size: 0.68rem; color: var(--color-text-muted);">480 kWh • ₹4,120</div>
-                </button>
-                <button type="button" class="sample-bill-btn" data-sample="standard" style="padding: 0.5rem; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-align: left; cursor: pointer;">
-                  <div class="sample-title" style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark);">Standard 3-BHK</div>
-                  <div class="sample-sub" style="font-size: 0.68rem; color: var(--color-text-muted);">290 kWh • ₹2,240</div>
-                </button>
-                <button type="button" class="sample-bill-btn" data-sample="efficient" style="padding: 0.5rem; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-align: left; cursor: pointer;">
-                  <div class="sample-title" style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark);">Eco-Home Bill</div>
-                  <div class="sample-sub" style="font-size: 0.68rem; color: var(--color-text-muted);">135 kWh • ₹890</div>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- SECTION DIVIDER -->
-          <div style="display: flex; align-items: center; margin: 1.5rem 0; gap: 1rem;">
-            <hr style="flex: 1; border: 0; border-top: 1px solid var(--color-border);">
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-deep-teal); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;">
-              OR Search Appliance Model & Calculator
-            </span>
-            <hr style="flex: 1; border: 0; border-top: 1px solid var(--color-border);">
-          </div>
-
-          <!-- Appliance Model & Power Directory Box -->
-          <div style="background: rgba(42, 131, 95, 0.06); border: 1px solid var(--color-border); padding: 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-              <span style="font-size: 0.8rem; font-weight: 700; color: var(--color-deep-teal); text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 0.4rem;">
-                <i data-lucide="database" style="width: 15px; color: var(--color-fresh-green);"></i>
-                Appliance Model & Power Directory
-              </span>
-              <span style="font-size: 0.75rem; background: var(--color-deep-teal); color: #fff; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 600;">Model Database</span>
-            </div>
-            <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-bottom: 0.75rem;">
-              Search by appliance brand or model to automatically retrieve verified power draw ratings (Watts).
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Light Bill Photo OCR Scanner</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Upload or take a live camera picture of your electricity bill. The Tesseract OCR engine auto-extracts consumed units (kWh) and verifies slab billing tariffs in seconds.
             </p>
-            
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-              <input type="text" class="form-control" id="aiBrandQuery" placeholder="Search model e.g. Daikin 1.5T AC, Samsung 253L Fridge, Havells BLDC Fan" style="font-size: 0.875rem; background: #fff;">
-              <button type="button" class="btn btn-primary btn-sm" id="aiSearchBtn" style="white-space: nowrap; padding: 0.6rem 1rem;">
-                <i data-lucide="search" style="width: 14px;"></i>
-                Search Model
-              </button>
-            </div>
-
-            <!-- Quick Suggestion Pills -->
-            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem;">
-              <span style="font-size: 0.75rem; color: var(--color-text-muted); align-self: center;">Quick Specs:</span>
-              <button type="button" class="ai-quick-pill" data-query="Daikin 1.5 Ton 5-Star AC">Daikin 1.5T AC (1450W)</button>
-              <button type="button" class="ai-quick-pill" data-query="Samsung 253L Fridge">Samsung 253L (170W)</button>
-              <button type="button" class="ai-quick-pill" data-query="Atomberg BLDC Fan">Atomberg Fan (28W)</button>
-              <button type="button" class="ai-quick-pill" data-query="LG 7Kg Washer">LG 7Kg Washer (400W)</button>
-              <button type="button" class="ai-quick-pill" data-query="Philips Air Fryer">Philips Air Fryer (1500W)</button>
-            </div>
-
-            <!-- AI Estimation Result Alert Banner -->
-            <div id="aiResultBox" style="display: none; margin-top: 0.8rem; padding: 0.85rem; border-radius: var(--radius-sm); background: #fff; border: 1px solid var(--color-fresh-green); box-shadow: var(--shadow-sm);">
-              <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
-                <div>
-                  <div style="font-weight: 700; font-size: 0.95rem; color: var(--color-primary-dark);" id="aiResultTitle">Daikin 1.5 Ton 5-Star Inverter AC</div>
-                  <div style="font-size: 0.8rem; color: var(--color-text-muted);" id="aiResultDetail">Power Spec: <strong style="color: var(--color-fresh-green); font-size: 0.95rem;" id="aiResultWattVal">1,450 Watts</strong> <span style="color: var(--color-deep-teal); font-weight: 600;" id="aiConfidenceBadge">(High Confidence)</span></div>
-                </div>
-                <button type="button" class="btn btn-primary btn-sm" id="aiApplyWattBtn" style="padding: 0.35rem 0.8rem; font-size: 0.8rem;">
-                  <i data-lucide="check" style="width: 14px;"></i> Apply Wattage Spec
-                </button>
-              </div>
-            </div>
           </div>
-
-          <form id="calcForm">
-            <div class="form-group">
-              <label class="form-label" for="calcAppliance">
-                Select Appliance Category
-                <i data-lucide="cpu" style="width: 16px; color: var(--color-fresh-green);"></i>
-              </label>
-              <select class="form-select" id="calcAppliance">
-                <option value="1500|Air Conditioner">Air Conditioner (1,500 W)</option>
-                <option value="75|Ceiling Fan">Ceiling Fan (75 W)</option>
-                <option value="200|Refrigerator">Refrigerator (200 W continuous)</option>
-                <option value="2000|Water Heater">Water Heater / Geyser (2,000 W)</option>
-                <option value="100|Smart TV">Smart Television (100 W)</option>
-                <option value="600|Washing Machine">Washing Machine (600 W)</option>
-                <option value="12|LED Lighting (5 Bulbs)">LED Lighting — 5 Bulbs (60 W total)</option>
-                <option value="65|Laptop Computer">Laptop Computer (65 W)</option>
-                <option value="custom">Custom Appliance...</option>
-              </select>
-            </div>
-
-            <!-- Brand & Machine Model Selector -->
-            <div class="form-group" id="brandModelGroup">
-              <label class="form-label" for="calcBrandModel">
-                Select Specific Brand & Model
-                <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-fresh-green);">Compare Models & Cost</span>
-              </label>
-              <select class="form-select" id="calcBrandModel">
-                <!-- Dynamically populated based on category -->
-              </select>
-            </div>
-
-            <!-- Brand Efficiency Comparison Banner -->
-            <div id="brandCompBanner" style="display: none; background: rgba(18, 84, 79, 0.06); border: 1px solid var(--color-border); padding: 0.85rem 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem; font-size: 0.825rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
-                <span style="font-weight: 700; color: var(--color-deep-teal); display: flex; align-items: center; gap: 0.35rem;" id="brandCompTitle">
-                  <i data-lucide="layers" style="width: 14px;"></i> Brand Model Efficiency
-                </span>
-                <span style="font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;" id="brandEfficiencyBadge">Most Efficient</span>
-              </div>
-              <div style="color: var(--color-text-muted);" id="brandCompDesc">
-                This model consumes 1,450W (~₹2,088/mo). Choosing a 5-Star Inverter model saves up to ₹576/month over older 3-Star non-inverter units.
-              </div>
-            </div>
-
-            <!-- Custom Name Input (Hidden by default) -->
-            <div class="form-group" id="customNameGroup" style="display: none;">
-              <label class="form-label" for="customApplianceName">Appliance Name / Model</label>
-              <input type="text" class="form-control" id="customApplianceName" placeholder="e.g. Microwave Oven">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="calcWatts">
-                Power Draw (Watts)
-                <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-fresh-green);" id="wattsSourceTag">Auto-estimated or check label</span>
-              </label>
-              <input type="number" class="form-control" id="calcWatts" value="1500" min="1" max="10000">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="calcHours">
-                Daily Usage (Hours / Day)
-              </label>
-              <input type="number" class="form-control" id="calcHours" value="6" min="0.5" max="24" step="0.5">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="calcDays">
-                Days per Month
-              </label>
-              <input type="number" class="form-control" id="calcDays" value="30" min="1" max="31">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label" for="tariffMode">
-                Tariff Mode
-                <span style="font-size: 0.8rem; font-weight: 400; color: var(--color-fresh-green);">Flat vs Slab Billing</span>
-              </label>
-              <select class="form-select" id="tariffMode">
-                <option value="flat">Flat Rate (Configurable ₹/kWh)</option>
-                <option value="tiered">Tiered Utility Slabs (Slab-based billing)</option>
-              </select>
-            </div>
-
-            <div class="form-group" id="flatTariffGroup">
-              <label class="form-label" for="calcTariff">
-                Electricity Tariff (₹ per kWh)
-              </label>
-              <input type="number" class="form-control" id="calcTariff" value="8.00" min="1" max="50" step="0.5">
-            </div>
-
-            <!-- Tiered Slab Info Box (Hidden by default) -->
-            <div id="tieredSlabBox" style="display: none; background: rgba(42,131,95,0.06); padding: 0.8rem; border-radius: var(--radius-sm); border: 1px solid var(--color-border); margin-bottom: 1.25rem; font-size: 0.8rem; color: var(--color-text-muted);">
-              <div style="font-weight: 700; color: var(--color-deep-teal); margin-bottom: 0.25rem;">Standard Utility Slabs Applied:</div>
-              <div>• 0 – 100 kWh: ₹4.50 / unit</div>
-              <div>• 101 – 300 kWh: ₹7.50 / unit</div>
-              <div>• 301+ kWh: ₹10.50 / unit</div>
-            </div>
-
-            <div style="display: flex; gap: 1rem;">
-              <button type="submit" class="btn btn-primary" style="flex: 1;">
-                <i data-lucide="calculator" style="width: 16px;"></i>
-                Compute Footprint
-              </button>
-              <button type="button" class="btn btn-outline" id="addToSnapshotBtn">
-                <i data-lucide="plus" style="width: 16px;"></i>
-                Add to Home List
-              </button>
-            </div>
-          </form>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">⚡ Instant Unit Extraction</span>
+          </div>
         </div>
 
-        <!-- Result Display -->
-        <div class="calc-results-card">
+        <!-- Showcase Feature 2 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
           <div>
-            <div class="calc-header">
-              <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-soft-sage); text-transform: uppercase; letter-spacing: 0.08em;">Estimated Consumption</span>
-              <h3 style="font-size: 1.5rem; margin-top: 0.2rem;" id="resApplianceTitle">Air Conditioner</h3>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="cpu" style="width: 26px; height: 26px;"></i>
             </div>
-
-            <div class="result-metric">
-              <div class="metric-val" id="resMonthlyKwh">270 kWh</div>
-              <div class="metric-sub">Monthly Electricity Consumption</div>
-            </div>
-
-            <div class="result-metric">
-              <div class="metric-val" style="color: #FFFFFF;" id="resMonthlyCost">₹2,160</div>
-              <div class="metric-sub" id="resTariffLabel">Estimated Monthly Energy Cost (Flat Rate)</div>
-            </div>
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Appliance Model & Power Directory</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Search specific brand models (e.g. Daikin Inverter AC, Samsung Fridge, Atomberg BLDC Fans) to retrieve laboratory power draw specs and calculate operating cost in real-time.
+            </p>
           </div>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">🔍 Certified Watt Ratings</span>
+          </div>
+        </div>
 
-          <!-- Savings Comparison Visual -->
-          <div class="comparison-box">
-            <h5>
-              <i data-lucide="zap-off" style="width: 16px; color: var(--color-soft-sage);"></i>
-              What if you used it 1 hour less each day?
-            </h5>
-
-            <div class="bar-comp">
-              <div class="bar-comp-label">
-                <span>Current (6 hrs/day)</span>
-                <span id="compCurrentVal">270 kWh</span>
-              </div>
-              <div class="bar-track">
-                <div class="bar-fill current" id="barFillCurrent" style="width: 100%;"></div>
-              </div>
+        <!-- Showcase Feature 3 -->
+        <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: var(--radius-lg); padding: 2rem; backdrop-filter: blur(8px); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div style="width: 52px; height: 52px; border-radius: 12px; background: rgba(110, 231, 183, 0.15); color: #6EE7B7; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem;">
+              <i data-lucide="file-text" style="width: 26px; height: 26px;"></i>
             </div>
-
-            <div class="bar-comp">
-              <div class="bar-comp-label">
-                <span>Reduced (5 hrs/day)</span>
-                <span id="compReducedVal">225 kWh</span>
-              </div>
-              <div class="bar-track">
-                <div class="bar-fill reduced" id="barFillReduced" style="width: 83%;"></div>
-              </div>
-            </div>
-
-            <div style="font-size: 0.85rem; color: var(--color-soft-sage); margin-top: 0.5rem; font-weight: 600;" id="savingsText">
-              Potential Savings: 45 kWh/month (Save ₹360/month)
-            </div>
-
-            <!-- Carbon & Environmental Badges -->
-            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem;" id="envBadgesBox">
-              <span style="font-size: 0.75rem; background: rgba(139,187,146,0.2); color: var(--color-soft-sage); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-weight: 600;" id="treeBadge">🌳 ~2 Trees Planted / yr</span>
-              <span style="font-size: 0.75rem; background: rgba(139,187,146,0.2); color: var(--color-soft-sage); padding: 0.3rem 0.6rem; border-radius: var(--radius-sm); font-weight: 600;" id="carBadge">🚗 ~185 km Driving Offset</span>
-            </div>
+            <h3 style="font-size: 1.35rem; color: #FFFFFF; margin-bottom: 0.75rem;">Multi-Appliance Audit & PDF Report</h3>
+            <p style="font-size: 0.95rem; color: rgba(224, 235, 240, 0.85); line-height: 1.6;">
+              Compile all household appliances into an aggregated consumption snapshot, identify your largest energy hog, and generate a printable PDF energy audit report.
+            </p>
+          </div>
+          <div style="margin-top: 1.5rem;">
+            <span style="font-size: 0.8rem; background: rgba(255,255,255,0.1); color: var(--color-soft-sage); padding: 0.3rem 0.7rem; border-radius: var(--radius-full); font-weight: 600;">📄 Printable PDF Export</span>
           </div>
         </div>
       </div>
 
-      <!-- MULTI-APPLIANCE SNAPSHOT -->
-      <div class="snapshot-container" id="snapshotSection">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-          <div>
-            <h3 style="font-size: 1.5rem; color: var(--color-primary-dark);">Your Home Energy Snapshot</h3>
-            <p style="font-size: 0.9rem; color: var(--color-text-muted);">Combined footprint of all appliances added to your household list.</p>
-          </div>
-          <div style="display: flex; gap: 0.75rem;">
-            <button class="btn btn-primary btn-sm" id="downloadAuditReportBtn">
-              <i data-lucide="file-text"></i> Download Energy Audit Report (PDF)
-            </button>
-            <button class="btn btn-outline btn-sm" id="clearSnapshotBtn">
-              <i data-lucide="trash-2"></i> Clear All
-            </button>
-          </div>
-        </div>
-
-        <div class="snapshot-table-wrapper">
-          <table class="snapshot-table">
-            <thead>
-              <tr>
-                <th>Appliance</th>
-                <th>Power (Watts)</th>
-                <th>Daily Hours</th>
-                <th>Monthly kWh</th>
-                <th>Monthly Cost (₹)</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody id="snapshotTableBody">
-              <!-- Dynamically populated -->
-            </tbody>
-          </table>
-        </div>
-
-        <div class="snapshot-summary-cards">
-          <div class="summary-card">
-            <div style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 600;">TOTAL MONTHLY USAGE</div>
-            <div class="summary-card-val" id="snapTotalKwh">0.0 kWh</div>
-            <div style="font-size: 0.8rem; color: var(--color-text-muted);">Combined electricity units</div>
-          </div>
-
-          <div class="summary-card">
-            <div style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 600;">TOTAL ESTIMATED COST</div>
-            <div class="summary-card-val" style="color: var(--color-primary-dark);" id="snapTotalCost">₹0.00</div>
-            <div style="font-size: 0.8rem; color: var(--color-text-muted);">Based on ₹8.00 / kWh</div>
-          </div>
-
-          <div class="summary-card">
-            <div style="font-size: 0.85rem; color: var(--color-text-muted); font-weight: 600;">LARGEST CONSUMER</div>
-            <div class="summary-card-val" style="font-size: 1.4rem; color: #B83A2E;" id="snapLargestAppliance">None Added</div>
-            <div style="font-size: 0.8rem; color: var(--color-text-muted);" id="snapLargestDetail">Add items to identify hog</div>
-          </div>
-        </div>
+      <!-- Main Action Call to Action Banner -->
+      <div style="text-align: center; background: rgba(0,0,0,0.2); padding: 2.5rem; border-radius: var(--radius-lg); border: 1px solid rgba(255,255,255,0.15); max-width: 780px; margin: 0 auto;">
+        <h3 style="font-size: 1.8rem; color: #FFFFFF; margin-bottom: 0.75rem;">Ready to Calculate Your Household Power?</h3>
+        <p style="color: rgba(224, 235, 240, 0.9); margin-bottom: 1.75rem; font-size: 1.05rem;">
+          Launch our dedicated calculation suite to run bill scans, compare inverter models, and analyze tiered utility slabs.
+        </p>
+        <a href="calculator.html" class="btn btn-primary" style="font-size: 1.1rem; padding: 0.85rem 2rem; display: inline-flex; align-items: center; gap: 0.6rem;">
+          <i data-lucide="calculator" style="width: 20px; height: 20px;"></i>
+          Open Calculate & Scan Page
+          <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -1026,7 +708,7 @@
           <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem;">
             <li><a href="#hero">Home</a></li>
             <li><a href="#problem">Discover</a></li>
-            <li><a href="#calculator">Calculator</a></li>
+            <li><a href="calculator.html">Calculate & Scan</a></li>
             <li><a href="#score">Energy Score</a></li>
             <li><a href="#take-action">Take Action</a></li>
           </ul>
