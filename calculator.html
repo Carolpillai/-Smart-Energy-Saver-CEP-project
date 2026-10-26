@@ -63,7 +63,7 @@
   <!-- CALCULATOR PAGE HERO BANNER -->
   <section class="section section-dark" style="padding-top: 7rem; padding-bottom: 3.5rem; border-bottom: 1px solid rgba(255,255,255,0.1);">
     <div class="container">
-      <div style="text-align: left; max-width: 820px;">
+      <div class="calc-hero-content" style="max-width: 820px;">
         <div style="margin-bottom: 1rem;">
           <span class="hero-tag" style="background: rgba(110, 231, 183, 0.15); color: #6EE7B7; border: 1px solid rgba(110, 231, 183, 0.3);">
             <i data-lucide="scan-line" style="width: 15px; height: 15px;"></i>
@@ -188,9 +188,9 @@
           </div>
 
           <!-- SECTION DIVIDER -->
-          <div style="display: flex; align-items: center; margin: 1.5rem 0; gap: 1rem;">
+          <div style="display: flex; align-items: center; margin: 1.5rem 0; gap: 0.75rem;">
             <hr style="flex: 1; border: 0; border-top: 1px solid var(--color-border);">
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-deep-teal); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--color-deep-teal); text-transform: uppercase; letter-spacing: 0.08em; text-align: center;">
               OR Search Appliance Model & Calculator
             </span>
             <hr style="flex: 1; border: 0; border-top: 1px solid var(--color-border);">
@@ -209,8 +209,8 @@
               Search by appliance brand or model to automatically retrieve verified power draw ratings (Watts).
             </p>
             
-            <div style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-              <input type="text" class="form-control" id="aiBrandQuery" placeholder="Search model e.g. Daikin 1.5T AC, Samsung 253L Fridge, Havells BLDC Fan" style="font-size: 0.875rem; background: #fff;">
+            <div class="calc-model-search-row" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+              <input type="text" class="form-control" id="aiBrandQuery" placeholder="Search model e.g. Daikin, Samsung, Havells" style="font-size: 0.875rem; background: #fff; flex: 1; min-width: 160px;">
               <button type="button" class="btn btn-primary btn-sm" id="aiSearchBtn" style="white-space: nowrap; padding: 0.6rem 1rem;">
                 <i data-lucide="search" style="width: 14px;"></i>
                 Search Model
