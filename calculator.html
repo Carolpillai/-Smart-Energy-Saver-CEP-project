@@ -49,11 +49,12 @@
       </ul>
 
       <div class="nav-actions">
-        <a href="index.html" class="btn btn-outline btn-sm" style="color: #ffffff; border-color: rgba(255,255,255,0.3);">
-          <i data-lucide="arrow-left"></i> Back to Home
+        <a href="index.html" class="btn btn-outline btn-sm nav-cta-btn" style="color: #ffffff; border-color: rgba(255,255,255,0.3);">
+          <i data-lucide="arrow-left"></i>
+          <span>Back to Home</span>
         </a>
         <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle Navigation">
-          <i data-lucide="menu"></i>
+          <i data-lucide="menu" id="mobileMenuIcon"></i>
         </button>
       </div>
     </div>
@@ -169,7 +170,7 @@
               <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-deep-teal); margin-bottom: 0.4rem;">
                 Don't have a bill photo handy? Click a Sample Bill:
               </div>
-              <div class="sample-bills-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem;">
+              <div class="sample-bills-grid">
                 <button type="button" class="sample-bill-btn" data-sample="heavy" style="padding: 0.5rem; background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-sm); text-align: left; cursor: pointer;">
                   <div class="sample-title" style="font-size: 0.75rem; font-weight: 700; color: var(--color-primary-dark);">Heavy AC Bill</div>
                   <div class="sample-sub" style="font-size: 0.68rem; color: var(--color-text-muted);">480 kWh • ₹4,120</div>
