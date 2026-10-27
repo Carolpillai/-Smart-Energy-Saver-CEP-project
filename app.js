@@ -1264,12 +1264,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (addToSnapshotBtn) {
     addToSnapshotBtn.addEventListener('click', () => {
-      const name = getSelectedApplianceName();
-      const watts = parseFloat(calcWatts.value) || 0;
-      const hours = parseFloat(calcHours.value) || 0;
-      const days = parseFloat(calcDays.value) || 30;
-      const kwh = (watts * hours * days) / 1000;
-      const cost = kwh * state.tariff;
+      let name, watts, hours, days, kwh, cost;
+      const resAppTitle = document.getElementById('resApplianceTitle');
+      const isScannedBillActive = resAppTitle && resAppTitle.textContent.includes('Scanned Bill') && currentOcrData;
+
+      if (isScannedBillActive) {
+        name = `Scanned Bill (${currentOcrData.name || 'Light Bill'})`;
+        kwh = currentOcrData.units;
+        cost = currentOcrData.amount;
+        days = currentOcrData.days || 30;
+        hours = 8;
+        watts = Math.round((kwh * 1000) / (days * hours));
+      } else {
+        name = getSelectedApplianceName();
+        watts = parseFloat(calcWatts.value) || 0;
+        hours = parseFloat(calcHours.value) || 0;
+        days = parseFloat(calcDays.value) || 30;
+        kwh = (watts * hours * days) / 1000;
+        cost = kwh * state.tariff;
+      }
 
       state.snapshotItems.push({
         id: Date.now().toString(),
@@ -1277,6 +1290,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       renderSnapshotTable();
+
+      const snapSec = document.getElementById('snapshotSection');
+      if (snapSec) {
+        snapSec.scrollIntoView({ behavior: 'smooth' });
+      }
     });
   }
 
@@ -1729,42 +1747,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const capturedDataUrl = cameraCanvas.toDataURL('image/jpeg', 0.95);
       stopCameraStream();
 
-      // Send captured camera photo into OCR scanner
-      runScannerAnimation(capturedDataUrl, 'Processing Camera Photo...', () => {
-        if (window.Tesseract) {
-          window.Tesseract.recognize(capturedDataUrl, 'eng').then(({ data: { text } }) => {
-            const unitMatch = text.match(/(\d{2,4})\s*(kwh|units|unit)/i);
-            const parsedUnits = unitMatch ? parseInt(unitMatch[1]) : 340;
-            const parsedAmount = Math.round(parsedUnits * 8.0);
-
-            renderOcrResults({
-              name: 'Live Camera Photo',
-              units: parsedUnits,
-              amount: parsedAmount,
-              days: 30,
-              load: '3 kW',
-              slabTier: parsedUnits > 300 ? 'Slab 3 (>300 Units)' : 'Slab 2 (101-300 Units)',
-              penalty: parsedUnits > 300 ? `${parsedUnits - 300} units billed at peak rate ₹10.50/unit` : 'Standard billing slab rate',
-              breakdown: [
-                { label: 'Cooling / Air Conditioner', percent: 54, kwh: Math.round(parsedUnits * 0.54), color: '#D96B5B' },
-                { label: 'Refrigeration (24/7)', percent: 20, kwh: Math.round(parsedUnits * 0.20), color: '#E29E4B' },
-                { label: 'Lighting & Fans', percent: 16, kwh: Math.round(parsedUnits * 0.16), color: '#2A835F' },
-                { label: 'Standby / Electronics', percent: 10, kwh: Math.round(parsedUnits * 0.10), color: '#8BBB92' }
-              ],
-              highlight: `⚡ Analyzed Camera Snapshot (${parsedUnits} kWh). Potential to save ~${Math.round(parsedUnits * 0.18)} kWh/month!`,
-              actions: [
-                `<strong>Target Savings:</strong> Reduce daily consumption by ${(parsedUnits * 0.18 / 30).toFixed(1)} units/day to save <strong>₹${Math.round(parsedUnits * 0.18 * 8.0)}/month</strong>.`,
-                '<strong>Manage AC & Heating (Set to 24°C–26°C):</strong> Set AC thermostat to 24°C–26°C (every 1°C increase saves 6% electricity)!',
-                '<strong>Eliminate Standby Waste:</strong> Switch off main wall sockets at night.'
-              ]
-            });
-          }).catch(() => {
-            renderOcrResults(sampleBills.standard);
-          });
-        } else {
-          renderOcrResults(sampleBills.standard);
-        }
-      });
+      // Send captured camera photo into unified OCR engine
+      processBillDataUrl(capturedDataUrl, 'Live Camera Photo');
     });
   }
 
@@ -1848,32 +1832,45 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   let currentOcrData = null;
+  let scannerTimer1 = null;
+  let scannerTimer2 = null;
+  let scannerTimer3 = null;
 
   // Process and Render Bill Data
   function renderOcrResults(data) {
+    if (!data) return;
     currentOcrData = data;
 
-    // Update Header & Badge
-    document.getElementById('ocrConsumerName').textContent = data.name || 'Residential Light Bill';
+    // Update Header & Badge if elements exist in DOM
+    const ocrConsumer = document.getElementById('ocrConsumerName');
+    if (ocrConsumer) ocrConsumer.textContent = data.name || 'Residential Light Bill';
     const badge = document.getElementById('ocrSlabBadge');
-    badge.textContent = data.slabTier || 'Parsed Tier';
+    if (badge) badge.textContent = data.slabTier || 'Parsed Tier';
     
-    // Update Metrics
-    document.getElementById('ocrUnitsVal').textContent = `${data.units} kWh`;
+    // Update Metrics if elements exist in DOM
+    const ocrUnits = document.getElementById('ocrUnitsVal');
+    if (ocrUnits) ocrUnits.textContent = `${data.units} kWh`;
     const daily = (data.units / (data.days || 30)).toFixed(1);
-    document.getElementById('ocrDailyUnitsSub').textContent = `~${daily} units / day`;
+    const ocrDaily = document.getElementById('ocrDailyUnitsSub');
+    if (ocrDaily) ocrDaily.textContent = `~${daily} units / day`;
 
-    document.getElementById('ocrAmountVal').textContent = `₹${data.amount.toLocaleString()}`;
+    const ocrAmount = document.getElementById('ocrAmountVal');
+    if (ocrAmount) ocrAmount.textContent = `₹${data.amount.toLocaleString()}`;
     const avgRate = (data.amount / data.units).toFixed(2);
-    document.getElementById('ocrAvgUnitRateSub').textContent = `Avg Rate: ₹${avgRate}/unit`;
+    const ocrAvgRate = document.getElementById('ocrAvgUnitRateSub');
+    if (ocrAvgRate) ocrAvgRate.textContent = `Avg Rate: ₹${avgRate}/unit`;
 
-    document.getElementById('ocrPeriodVal').textContent = `${data.days || 30} Days`;
-    document.getElementById('ocrSanctionLoadSub').textContent = `Sanctioned Load: ${data.load || '3 kW'}`;
+    const ocrPeriod = document.getElementById('ocrPeriodVal');
+    if (ocrPeriod) ocrPeriod.textContent = `${data.days || 30} Days`;
+    const ocrSanction = document.getElementById('ocrSanctionLoadSub');
+    if (ocrSanction) ocrSanction.textContent = `Sanctioned Load: ${data.load || '3 kW'}`;
 
-    document.getElementById('ocrSlabTierVal').textContent = data.slabTier;
-    document.getElementById('ocrPenaltySub').textContent = data.penalty;
+    const ocrSlabTier = document.getElementById('ocrSlabTierVal');
+    if (ocrSlabTier) ocrSlabTier.textContent = data.slabTier;
+    const ocrPenalty = document.getElementById('ocrPenaltySub');
+    if (ocrPenalty) ocrPenalty.textContent = data.penalty;
 
-    // Render Appliance Contribution Bar Stack
+    // Render Appliance Contribution Bar Stack if element exists
     const barStack = document.getElementById('ocrBarStack');
     if (barStack) {
       barStack.innerHTML = '';
@@ -1895,12 +1892,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render Strategy Highlight & Actions if present
     const highlightElem = document.getElementById('ocrStrategyHighlight');
-    if (highlightElem) highlightElem.innerHTML = data.highlight;
+    if (highlightElem && data.highlight) highlightElem.innerHTML = data.highlight;
     
     const actionList = document.getElementById('ocrActionList');
-    if (actionList) {
+    if (actionList && data.actions) {
       actionList.innerHTML = '';
-      (data.actions || []).forEach(act => {
+      data.actions.forEach(act => {
         const li = document.createElement('li');
         li.innerHTML = `<i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: var(--color-soft-sage); flex-shrink: 0; margin-top: 3px;"></i> <div>${act}</div>`;
         actionList.appendChild(li);
@@ -1910,6 +1907,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.lucide) window.lucide.createIcons();
 
     // Populate Success Screen Details
+    const ocrSuccessImg = document.getElementById('ocrSuccessImg');
+    const ocrSuccessTitle = document.getElementById('ocrSuccessTitle');
+    const ocrSuccessUnits = document.getElementById('ocrSuccessUnits');
+    const ocrSuccessAmount = document.getElementById('ocrSuccessAmount');
     if (ocrSuccessImg) ocrSuccessImg.src = activeScannedImgSrc || data.image;
     if (ocrSuccessTitle) ocrSuccessTitle.textContent = data.name || 'Scanned Light Bill';
     if (ocrSuccessUnits) ocrSuccessUnits.textContent = `⚡ ${data.units} kWh`;
@@ -1919,12 +1920,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const resAppTitle = document.getElementById('resApplianceTitle');
     const resKwh = document.getElementById('resMonthlyKwh');
     const resCost = document.getElementById('resMonthlyCost');
+    const resTariffLabel = document.getElementById('resTariffLabel');
     const calcWatts = document.getElementById('calcWatts');
     const calcHours = document.getElementById('calcHours');
 
     if (resAppTitle) resAppTitle.textContent = `Scanned Bill (${data.name || 'Light Bill'})`;
     if (resKwh) resKwh.textContent = `${data.units} kWh`;
     if (resCost) resCost.textContent = `₹${data.amount.toLocaleString()}`;
+    if (resTariffLabel) resTariffLabel.textContent = `Actual Scanned Bill Amount (${data.slabTier || 'Utility Bill'})`;
+
+    // Update Savings & Reduction Visuals for this bill
+    const compCurrentVal = document.getElementById('compCurrentVal');
+    const compReducedVal = document.getElementById('compReducedVal');
+    const barFillReduced = document.getElementById('barFillReduced');
+    const savingsText = document.getElementById('savingsText');
+    const treeBadge = document.getElementById('treeBadge');
+    const carBadge = document.getElementById('carBadge');
+
+    const billUnits = data.units;
+    const reducedUnits = Math.round(billUnits * 0.82);
+    const savedUnits = billUnits - reducedUnits;
+    const avgRatePerUnit = billUnits > 0 ? (data.amount / billUnits) : 8.0;
+    const savedAmount = Math.round(savedUnits * avgRatePerUnit);
+
+    if (compCurrentVal) compCurrentVal.textContent = `${billUnits} kWh`;
+    if (compReducedVal) compReducedVal.textContent = `${reducedUnits} kWh`;
+    if (barFillReduced) barFillReduced.style.width = `82%`;
+    if (savingsText) {
+      savingsText.textContent = `Potential Savings: ${savedUnits} kWh/month (Save ~₹${savedAmount.toLocaleString()}/month with conservation)`;
+    }
+    if (treeBadge) {
+      const trees = Math.max(1, Math.round(savedUnits * 0.037 * 12));
+      treeBadge.textContent = `🌳 ~${trees} Trees / yr`;
+    }
+    if (carBadge) {
+      const carKm = Math.round(savedUnits * 4.1);
+      carBadge.textContent = `🚗 ~${carKm} km Driving Offset`;
+    }
 
     if (calcWatts && calcHours) {
       calcWatts.value = 1500;
@@ -1933,33 +1965,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Show Results Panel if standalone panel present
+    const ocrEmptyState = document.getElementById('ocrEmptyState');
+    const ocrResultsDashboard = document.getElementById('ocrResultsDashboard');
     if (ocrEmptyState) ocrEmptyState.style.display = 'none';
     if (ocrResultsDashboard) ocrResultsDashboard.style.display = 'block';
   }
 
   // Run Visual Laser Scanner Sequence
   function runScannerAnimation(imgSrc, statusText, onComplete) {
+    if (scannerTimer1) clearTimeout(scannerTimer1);
+    if (scannerTimer2) clearTimeout(scannerTimer2);
+    if (scannerTimer3) clearTimeout(scannerTimer3);
+
     activeScannedImgSrc = imgSrc;
+    const ocrDropzoneContent = document.getElementById('ocrDropzoneContent');
+    const ocrSuccessScreen = document.getElementById('ocrSuccessScreen');
+    const ocrScannerScreen = document.getElementById('ocrScannerScreen');
+    const ocrPreviewImg = document.getElementById('ocrPreviewImg');
+    const ocrStatusText = document.getElementById('ocrStatusText');
+
     if (ocrDropzoneContent) ocrDropzoneContent.style.display = 'none';
     if (ocrSuccessScreen) ocrSuccessScreen.style.display = 'none';
     if (ocrScannerScreen) ocrScannerScreen.style.display = 'block';
     if (ocrPreviewImg) ocrPreviewImg.src = imgSrc;
     if (ocrStatusText) ocrStatusText.textContent = statusText || 'Scanning Light Bill image...';
 
-    setTimeout(() => {
+    scannerTimer1 = setTimeout(() => {
       if (ocrStatusText) ocrStatusText.textContent = 'Extracting numeric kWh & tariff text fields...';
-    }, 1200);
+    }, 350);
 
-    setTimeout(() => {
+    scannerTimer2 = setTimeout(() => {
       if (ocrStatusText) ocrStatusText.textContent = 'Calculating tariff slab & appliance breakdown...';
-    }, 2200);
+    }, 700);
 
-    setTimeout(() => {
+    scannerTimer3 = setTimeout(() => {
       if (ocrScannerScreen) ocrScannerScreen.style.display = 'none';
       if (ocrDropzoneContent) ocrDropzoneContent.style.display = 'none';
       if (ocrSuccessScreen) ocrSuccessScreen.style.display = 'block';
       if (onComplete) onComplete();
-    }, 3000);
+    }, 1050);
   }
 
   // Handle Sample Bill Clicks
@@ -1968,6 +2012,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const key = btn.getAttribute('data-sample');
       const data = sampleBills[key];
       if (data) {
+        // Highlight active sample bill button
+        sampleBillBtns.forEach(b => {
+          b.style.borderColor = 'var(--color-border)';
+          b.style.backgroundColor = '#fff';
+        });
+        btn.style.borderColor = 'var(--color-fresh-green)';
+        btn.style.backgroundColor = 'rgba(42, 131, 95, 0.08)';
+
+        // Immediately update calculator results so the cost changes instantly
+        renderOcrResults(data);
+
+        // Run scanner animation in dropzone with onComplete sync
         runScannerAnimation(data.image, `Analyzing ${data.name}...`, () => {
           renderOcrResults(data);
         });
@@ -1999,54 +2055,198 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Helper: Downscale image to optimal size (< 1280px) for superfast & accurate OCR
+  function preprocessImageForOcr(dataUrl, callback) {
+    if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image')) {
+      callback(dataUrl);
+      return;
+    }
+    const img = new Image();
+    img.onload = function() {
+      let width = img.width;
+      let height = img.height;
+      const maxDim = 1280;
+      if (width > maxDim || height > maxDim) {
+        if (width > height) {
+          height = Math.round((height * maxDim) / width);
+          width = maxDim;
+        } else {
+          width = Math.round((width * maxDim) / height);
+          height = maxDim;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      callback(canvas.toDataURL('image/jpeg', 0.88));
+    };
+    img.onerror = function() {
+      callback(dataUrl);
+    };
+    img.src = dataUrl;
+  }
+
+  // Helper: Extract Units & Amount from OCR Text with multiple comprehensive patterns
+  function extractBillMetrics(text) {
+    let units = null;
+    let amount = null;
+
+    if (text && typeof text === 'string') {
+      const cleanText = text.replace(/(\r\n|\n|\r)/gm, ' ');
+
+      // 1. Match Units (kWh / Consumed / Metered / Total)
+      const unitPatterns = [
+        /(?:units\s*consumed|billed\s*units|total\s*units|net\s*units|consumption\s*units|metered\s*units|billing\s*units)[\s\:\-\.\=]*([0-9]{1,4}(?:\.[0-9]+)?)/i,
+        /([0-9]{2,4}(?:\.[0-9]+)?)\s*(?:kwh|units|unit)\b/i,
+        /(?:units|kwh|consumption|consumed)[\s\:\-\.\=]*([0-9]{2,4})/i,
+        /\b(?:units|kwh)\b[^\d]{1,15}([0-9]{2,4})/i
+      ];
+
+      for (const pat of unitPatterns) {
+        const match = cleanText.match(pat);
+        if (match && match[1]) {
+          const val = parseFloat(match[1]);
+          if (val >= 20 && val <= 3500) {
+            units = Math.round(val);
+            break;
+          }
+        }
+      }
+
+      // 2. Match Amount Payable (₹ / Rs / Total / Net)
+      const amountPatterns = [
+        /(?:net\s*amount|amount\s*payable|total\s*payable|bill\s*amount|total\s*amount|payable\s*amount|current\s*demand|current\s*bill|net\s*demand|total\s*due|gross\s*amount)[\s\:\-\.\=]*(?:rs\.?|inr|₹)?[\s]*([0-9]{1,2}(?:,[0-9]{2,3})*(?:\.[0-9]{2})?|[0-9]{3,6})/i,
+        /(?:rs\.?|inr|₹)[\s]*([0-9]{1,2}(?:,[0-9]{2,3})*(?:\.[0-9]{2})?|[0-9]{3,6})/i,
+        /([0-9]{1,2}(?:,[0-9]{2,3})*(?:\.[0-9]{2})?|[0-9]{3,6})[\s]*(?:rs\.?|inr|₹)/i,
+        /(?:payable|due|total)[^\d]{1,15}([0-9]{3,6})/i
+      ];
+
+      for (const pat of amountPatterns) {
+        const match = cleanText.match(pat);
+        if (match && match[1]) {
+          const cleanVal = match[1].replace(/,/g, '');
+          const val = parseFloat(cleanVal);
+          if (val >= 150 && val <= 85000) {
+            amount = Math.round(val);
+            break;
+          }
+        }
+      }
+    }
+
+    // Smart cross-computation if only one value found
+    const tariff = (state && state.tariff) || 8.00;
+    if (units && !amount) {
+      amount = Math.round(computeKwhCost(units, 'tiered', tariff));
+    } else if (amount && !units) {
+      units = Math.round(amount / tariff);
+    } else if (!units && !amount) {
+      // Sensible baseline if image has no readable OCR text
+      units = 310;
+      amount = 2480;
+    }
+
+    return { units, amount };
+  }
+
+  // Unified Bill Processing Engine
+  function processBillDataUrl(dataUrl, rawName) {
+    const cleanName = (rawName || 'Light Bill').replace(/\.[^/.]+$/, "");
+    activeScannedImgSrc = dataUrl;
+
+    const ocrDropzoneContent = document.getElementById('ocrDropzoneContent');
+    const ocrSuccessScreen = document.getElementById('ocrSuccessScreen');
+    const ocrScannerScreen = document.getElementById('ocrScannerScreen');
+    const ocrPreviewImg = document.getElementById('ocrPreviewImg');
+    const ocrStatusText = document.getElementById('ocrStatusText');
+
+    if (ocrDropzoneContent) ocrDropzoneContent.style.display = 'none';
+    if (ocrSuccessScreen) ocrSuccessScreen.style.display = 'none';
+    if (ocrScannerScreen) ocrScannerScreen.style.display = 'block';
+    if (ocrPreviewImg) ocrPreviewImg.src = dataUrl;
+    if (ocrStatusText) ocrStatusText.textContent = `Analyzing ${cleanName}...`;
+
+    preprocessImageForOcr(dataUrl, (optimizedDataUrl) => {
+      let isResolved = false;
+
+      // Completion Handler
+      const handleOcrFinished = (textResult) => {
+        if (isResolved) return;
+        isResolved = true;
+
+        if (ocrStatusText) ocrStatusText.textContent = 'Calculating tariff slab & appliance breakdown...';
+
+        const { units, amount } = extractBillMetrics(textResult);
+
+        const customData = {
+          name: cleanName,
+          units: units,
+          amount: amount,
+          days: 30,
+          load: units > 300 ? '4 kW' : '3 kW',
+          slabTier: units > 300 ? 'Slab 3 (>300 Units)' : (units > 100 ? 'Slab 2 (101-300 Units)' : 'Slab 1 (0-100 Units)'),
+          penalty: units > 300 ? `${units - 300} units billed at peak rate ₹10.50/unit` : 'Standard billing slab rate',
+          breakdown: [
+            { label: 'Cooling / Air Conditioner', percent: 52, kwh: Math.round(units * 0.52), color: '#D96B5B' },
+            { label: 'Refrigeration (24/7)', percent: 22, kwh: Math.round(units * 0.22), color: '#E29E4B' },
+            { label: 'Lighting & Fans', percent: 16, kwh: Math.round(units * 0.16), color: '#2A835F' },
+            { label: 'Standby / Electronics', percent: 10, kwh: Math.round(units * 0.10), color: '#8BBB92' }
+          ],
+          highlight: `⚡ Analyzed Uploaded Bill (${units} kWh • ₹${amount.toLocaleString()}). Potential to save ~${Math.round(units * 0.18)} kWh/month!`,
+          actions: [
+            `<strong>Target Savings:</strong> Reduce daily consumption by ${(units * 0.18 / 30).toFixed(1)} units/day to save <strong>₹${Math.round(amount * 0.18)}/month</strong>.`,
+            '<strong>Manage AC & Heating (Set to 24°C–26°C):</strong> Setting AC to 24°C saves ~6% electricity per degree!',
+            '<strong>Eliminate Standby Waste:</strong> Switch off main wall sockets at night.'
+          ]
+        };
+
+        setTimeout(() => {
+          if (ocrScannerScreen) ocrScannerScreen.style.display = 'none';
+          if (ocrDropzoneContent) ocrDropzoneContent.style.display = 'none';
+          if (ocrSuccessScreen) ocrSuccessScreen.style.display = 'block';
+
+          // Immediately render and update calculator display!
+          renderOcrResults(customData);
+        }, 600);
+      };
+
+      // Maximum 3.5s timeout guarantee so user never gets stuck
+      const timeoutId = setTimeout(() => {
+        handleOcrFinished('');
+      }, 3500);
+
+      // Run Client Tesseract OCR if available
+      if (window.Tesseract && typeof window.Tesseract.recognize === 'function') {
+        if (ocrStatusText) ocrStatusText.textContent = 'Reading numeric kWh & tariff text...';
+
+        window.Tesseract.recognize(optimizedDataUrl, 'eng', {
+          logger: m => {
+            if (m && m.status === 'recognizing text' && m.progress && ocrStatusText) {
+              ocrStatusText.textContent = `Extracting text: ${Math.round(m.progress * 100)}%`;
+            }
+          }
+        }).then(({ data: { text } }) => {
+          clearTimeout(timeoutId);
+          handleOcrFinished(text);
+        }).catch(err => {
+          clearTimeout(timeoutId);
+          console.warn('OCR processing error, using fallback:', err);
+          handleOcrFinished('');
+        });
+      } else {
+        clearTimeout(timeoutId);
+        handleOcrFinished('');
+      }
+    });
+  }
+
   function processUploadedBillFile(file) {
+    if (!file) return;
     const reader = new FileReader();
     reader.onload = function(evt) {
-      const imgSrc = evt.target.result;
-      
-      runScannerAnimation(imgSrc, 'Running Client Tesseract OCR Engine...', () => {
-        if (window.Tesseract) {
-          window.Tesseract.recognize(imgSrc, 'eng', {
-            logger: m => console.log(m)
-          }).then(({ data: { text } }) => {
-            console.log('Tesseract OCR Output:', text);
-            const unitMatch = text.match(/(\d{2,4})\s*(kwh|units|unit)/i) || text.match(/total\s*:?\s*(\d{2,4})/i);
-            const amountMatch = text.match(/(₹|rs\.?|inr)\s*([\d,]{3,6})/i) || text.match(/(\d{3,6})\s*(₹|rs)/i);
-
-            const parsedUnits = unitMatch ? parseInt(unitMatch[1]) : 365;
-            const parsedAmount = amountMatch ? parseInt(amountMatch[2].replace(/,/g, '')) : Math.round(parsedUnits * 8.2);
-
-            const customData = {
-              name: file.name.replace(/\.[^/.]+$/, "") + " (Uploaded)",
-              units: parsedUnits,
-              amount: parsedAmount,
-              days: 30,
-              load: '3 kW',
-              slabTier: parsedUnits > 300 ? 'Slab 3 (>300 Units)' : (parsedUnits > 100 ? 'Slab 2 (101-300 Units)' : 'Slab 1 (0-100 Units)'),
-              penalty: parsedUnits > 300 ? `${parsedUnits - 300} units billed at peak rate ₹10.50/unit` : 'Standard billing slab rate',
-              breakdown: [
-                { label: 'Cooling / Air Conditioner', percent: 52, kwh: Math.round(parsedUnits * 0.52), color: '#D96B5B' },
-                { label: 'Refrigeration (24/7)', percent: 22, kwh: Math.round(parsedUnits * 0.22), color: '#E29E4B' },
-                { label: 'Lighting & Fans', percent: 16, kwh: Math.round(parsedUnits * 0.16), color: '#2A835F' },
-                { label: 'Standby / Electronics', percent: 10, kwh: Math.round(parsedUnits * 0.10), color: '#8BBB92' }
-              ],
-              highlight: `⚡ Analyzed Uploaded Bill (${parsedUnits} kWh). Potential to save ~${Math.round(parsedUnits * 0.18)} kWh/month!`,
-              actions: [
-                `<strong>Target Savings:</strong> Reduce daily consumption by ${(parsedUnits * 0.18 / 30).toFixed(1)} units/day to save <strong>₹${Math.round(parsedUnits * 0.18 * 8.0)}/month</strong>.`,
-                '<strong>Manage AC & Heating (Set to 24°C–26°C):</strong> Cooling/heating accounts for over 50% of your bill. Set your AC thermostat to 24°C–26°C (every 1°C increase saves 6% electricity)!',
-                '<strong>Eliminate Standby Waste:</strong> Switch off main wall sockets at night.'
-              ]
-            };
-
-            renderOcrResults(customData);
-          }).catch(err => {
-            console.warn('OCR error, using fallback:', err);
-            renderOcrResults(sampleBills.standard);
-          });
-        } else {
-          renderOcrResults(sampleBills.standard);
-        }
-      });
+      processBillDataUrl(evt.target.result, file.name);
     };
     reader.readAsDataURL(file);
   }
@@ -2056,6 +2256,27 @@ document.addEventListener('DOMContentLoaded', () => {
     billFileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (file) processUploadedBillFile(file);
+    });
+  }
+
+  // Adjust Scanned Bill Units / Cost Manual Override
+  const editScannedBillBtn = document.getElementById('editScannedBillBtn');
+  if (editScannedBillBtn) {
+    editScannedBillBtn.addEventListener('click', () => {
+      if (!currentOcrData) return;
+      const currentUnits = currentOcrData.units || 300;
+      
+      const newUnitsStr = prompt('Enter or adjust your light bill consumption (kWh / units):', currentUnits);
+      if (newUnitsStr !== null && newUnitsStr.trim() !== '') {
+        const newUnits = parseInt(newUnitsStr.replace(/[^\d]/g, ''), 10);
+        if (!isNaN(newUnits) && newUnits > 0) {
+          const newCost = Math.round(computeKwhCost(newUnits, 'tiered', state.tariff || 8.00));
+          currentOcrData.units = newUnits;
+          currentOcrData.amount = newCost;
+          currentOcrData.slabTier = newUnits > 300 ? 'Slab 3 (>300 Units)' : (newUnits > 100 ? 'Slab 2 (101-300 Units)' : 'Slab 1 (0-100 Units)');
+          renderOcrResults(currentOcrData);
+        }
+      }
     });
   }
 
