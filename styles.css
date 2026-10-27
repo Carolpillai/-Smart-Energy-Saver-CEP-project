@@ -984,6 +984,7 @@ h1, h2, h3, .heading-serif {
 .snapshot-container {
   margin-top: 3rem;
   background: var(--color-surface);
+  color: var(--color-text-main);
   border-radius: var(--radius-lg);
   padding: 2.5rem;
   border: 1px solid var(--color-border);
@@ -999,11 +1000,17 @@ h1, h2, h3, .heading-serif {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  color: var(--color-text-main);
 }
 
 .snapshot-table th, .snapshot-table td {
   padding: 1rem;
   border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-main) !important;
+}
+
+.snapshot-table td strong {
+  color: var(--color-primary-dark) !important;
 }
 
 .snapshot-table th {
@@ -1022,6 +1029,7 @@ h1, h2, h3, .heading-serif {
 
 .summary-card {
   background: var(--color-warm-bg);
+  color: var(--color-text-main);
   padding: 1.5rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border);

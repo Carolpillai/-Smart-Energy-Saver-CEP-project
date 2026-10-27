@@ -1224,14 +1224,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const tr = document.createElement('tr');
+        tr.style.color = 'var(--color-text-main)';
         tr.innerHTML = `
-          <td><strong>${item.name}</strong></td>
-          <td>${item.watts} W</td>
-          <td>${item.hours} hrs/day</td>
-          <td><strong>${item.kwh.toFixed(1)} kWh</strong></td>
-          <td><strong>₹${Math.round(item.cost).toLocaleString()}</strong></td>
+          <td style="color: var(--color-primary-dark); font-weight: 600;">${item.name}</td>
+          <td style="color: var(--color-text-main);">${item.watts} W</td>
+          <td style="color: var(--color-text-main);">${item.hours} hrs/day</td>
+          <td style="color: var(--color-primary-dark); font-weight: 600;">${item.kwh.toFixed(1)} kWh</td>
+          <td style="color: var(--color-primary-dark); font-weight: 700;">₹${Math.round(item.cost).toLocaleString()}</td>
           <td>
-            <button class="btn btn-outline btn-sm remove-item-btn" data-index="${index}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;">
+            <button class="btn btn-outline btn-sm remove-item-btn" data-index="${index}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" title="Remove appliance">
               <i data-lucide="x"></i>
             </button>
           </td>
@@ -2225,8 +2226,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('resMetaResidents').textContent = residents.replace('+', '');
 
       // Update Locality & Team
-      document.getElementById('aboutLocalityName').textContent = locality;
-      document.getElementById('footerLocalityTag').textContent = `Locality: ${locality}`;
+      const aboutLocality = document.getElementById('aboutLocalityName');
+      if (aboutLocality) aboutLocality.textContent = locality;
+      const footerTag = document.getElementById('footerLocalityTag');
+      if (footerTag) footerTag.textContent = `Locality: ${locality}`;
 
       document.getElementById('footerMember1').textContent = `${r1} — Field Research & Data Analysis`;
       document.getElementById('footerMember2').textContent = `${r2} — Technology & Product Design`;
